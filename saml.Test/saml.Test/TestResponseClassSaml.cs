@@ -14,11 +14,11 @@ namespace Saml.Test
         /// This test method ensures that the getter functions return the correct information.
         /// </summary>
         [TestMethod()]
-        public void testGetters()
+        public void TestGetters()
         {
             Response response = new Response(Constants.VALID_CERTIFICATE);
 
-            string xml_contents = getResourceContents(Constants.VALID_XML_RESPONSE_RESOURCE);
+            string xml_contents = GetResourceContents(Constants.VALID_XML_RESPONSE_RESOURCE);
 
             response.LoadXml(xml_contents);
 
@@ -50,13 +50,11 @@ namespace Saml.Test
         /// into the 'Response' class of the SAML library. The test ensures that the appropriate 
         /// exception is thrown.</summary>
         [TestMethod()]
-        public void testEmptyXml()
+        public void TestEmptyXml()
         {
-            Response response = null;
+            Response response = new Response(Constants.VALID_CERTIFICATE);
 
-            response = new Response(Constants.VALID_CERTIFICATE);
-
-            string xml_contents = getResourceContents(Constants.EMPTY_XML_RESPONSE_RESOURCE);
+            string xml_contents = GetResourceContents(Constants.EMPTY_XML_RESPONSE_RESOURCE);
 
             var load_xml_exception = Assert.ThrowsException<XmlException>(() => { response.LoadXml(xml_contents); });
             Assert.IsTrue(load_xml_exception is XmlException);
@@ -67,7 +65,7 @@ namespace Saml.Test
         /// into the 'Response' class of the SAML library. This method tests to see 
         /// if the correct exceptions are thrown.</summary>
         [TestMethod]
-        public void testInvalidCertificate()
+        public void TestInvalidCertificate()
         {
             Response response = null;
 
@@ -80,13 +78,11 @@ namespace Saml.Test
         /// is invalid i.e contains bad chars. 
         /// For this method, a valid certificate is used.</summary>
         [TestMethod]
-        public void testInvalidXml()
+        public void TestInvalidXml()
         { 
-            Response response = null;
+            Response response = new Response(Constants.VALID_CERTIFICATE);
 
-            response = new Response(Constants.VALID_CERTIFICATE);
-
-            string xml_contents = getResourceContents(Constants.INVALID_XML_RESPONSE_RESOURCE);
+            string xml_contents = GetResourceContents(Constants.INVALID_XML_RESPONSE_RESOURCE);
 
             var load_xml_exception = Assert.ThrowsException<XmlException>(() => { response.LoadXml(xml_contents); });
 
@@ -99,7 +95,7 @@ namespace Saml.Test
         /// when an empty certificate is loaded.
         /// </summary>
         [TestMethod]
-        public void testResponseEmptyCertificate()
+        public void TestResponseEmptyCertificate()
         {
             Response response = null;
 
@@ -110,7 +106,7 @@ namespace Saml.Test
         /// <summary> This function returns the contents of a resource file.</summary>
         /// <param name="resource_path"></param>
         /// <returns></returns>
-        private string getResourceContents(string resource_path)
+        private string GetResourceContents(string resource_path)
         {
             var stream = typeof(TestResponseClassSaml).Assembly.GetManifestResourceStream(resource_path);
             string resource_contents = new StreamReader(stream).ReadToEnd();
