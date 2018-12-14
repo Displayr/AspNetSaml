@@ -12,7 +12,6 @@ namespace Saml.Test
     public class TestAuthRequestClassSaml
     {
         const string SAML_ENDPOINT = "https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
-        const int SAML_REQUEST_OFFSET = 13;
 
         const string TEST_SERVICE_PROVIDER_URL = "dummy.com";
         const string TEST_REPLY_URL = "dummy.com/reply";
@@ -37,7 +36,8 @@ namespace Saml.Test
 
             // reverse the process applied by the SAML library to get the request XML
             // Undo UrlEncode => Undo Base64
-            string saml_request             = redirect_url.Substring(SAML_ENDPOINT.Length + SAML_REQUEST_OFFSET);
+            int request_index = redirect_url.IndexOf("SAMLRequest=") + "SAMLRequest=".Length;
+            string saml_request             = redirect_url.Substring(request_index);
             string url_param_decoded        = HttpUtility.UrlDecode(saml_request);
             byte[] base64_decoded_bytes     = Convert.FromBase64String(url_param_decoded);
 
@@ -79,7 +79,8 @@ namespace Saml.Test
             Assert.ThrowsException<NullReferenceException>(() => { string redirect_url = auth_request.GetRedirectUrl(null); });
         }
 
-        /// <summary> This test ensures that if 
+        /// <summary> This test ensures that if an invalid parameter is given to GetRequest 
+        /// then null is returned.
         /// </summary>
         [TestMethod()]
         public void TestGetRequestInvalidEncoding()
@@ -87,6 +88,17 @@ namespace Saml.Test
             AuthRequest auth_request = new AuthRequest(TEST_SERVICE_PROVIDER_URL, TEST_REPLY_URL);
             string request = auth_request.GetRequest((AuthRequest.AuthRequestFormat)5);
             Assert.IsNull(request);
+        }
+
+        /// <summary> This test ensures that the function GetRequest() returns a result 
+        /// that is not null if the parameters provided are valid.
+        /// </summary>
+        [TestMethod()]
+        public void TestGetRequestValid()
+        {
+            AuthRequest auth_request = new AuthRequest(TEST_SERVICE_PROVIDER_URL, TEST_REPLY_URL);
+            string request = auth_request.GetRequest(AuthRequest.AuthRequestFormat.Base64);
+            Assert.IsNotNull(request);
         }
 
         // borrowed from the SAML library
