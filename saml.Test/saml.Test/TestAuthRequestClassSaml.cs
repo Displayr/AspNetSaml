@@ -36,7 +36,7 @@ namespace Saml.Test
 
             // reverse the process applied by the SAML library to get the request XML
             // Undo UrlEncode => Undo Base64
-            int request_index = redirect_url.IndexOf("SAMLRequest=") + "SAMLRequest=".Length;
+            int request_index               = redirect_url.IndexOf("SAMLRequest=") + "SAMLRequest=".Length;
             string saml_request             = redirect_url.Substring(request_index);
             string url_param_decoded        = HttpUtility.UrlDecode(saml_request);
             byte[] base64_decoded_bytes     = Convert.FromBase64String(url_param_decoded);
@@ -101,7 +101,7 @@ namespace Saml.Test
             Assert.IsNotNull(request);
         }
 
-        // borrowed from the SAML library
+        /// borrowed from the SAML library
         byte[] StringToByteArray(string st)
         {
             byte[] bytes = new byte[st.Length];
