@@ -256,7 +256,7 @@ namespace Saml
         public List<string> GetGroups()
         {
             // this is only valid for azure claims.
-            XmlNodeList node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
+            XmlNodeList node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
 
             List<string> group_ids = new List<string>();
 
@@ -297,6 +297,9 @@ namespace Saml
 		public AuthRequest(string issuer, string assertionConsumerServiceUrl)
 		{
 			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
+
+            if (issuer == null || assertionConsumerServiceUrl == null)
+                throw new NullReferenceException();
 
 			_id = "_" + System.Guid.NewGuid().ToString();
 			_issue_instant = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
