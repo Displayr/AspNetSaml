@@ -103,9 +103,9 @@ namespace Saml
 
     public class Response
     {
-        private XmlDocument _xmlDoc;
+        protected XmlDocument _xmlDoc;
         private Certificate _certificate;
-        private XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
+        protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
 
         public string Xml { get { return _xmlDoc.OuterXml; } }
 
@@ -197,35 +197,28 @@ namespace Saml
             return node.InnerText;
         }
 
-        public string GetDisplayName()
+        public virtual string GetDisplayName()
         {
-            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/identity/claims/displayname']/saml:AttributeValue", _xmlNameSpaceManager);
-            return node == null ? null : node.InnerText;
+            return null;
         }
 
-        public string GetEmail()
+        public virtual string GetEmail()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='User.email']/saml:AttributeValue", _xmlNameSpaceManager);
 
             //some providers (for example Azure AD) put email into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-            if (node == null)
-                node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']/saml:AttributeValue", _xmlNameSpaceManager);
-
             return node == null ? null : node.InnerText;
         }
 
-        public string GetFirstName()
+        public virtual string GetFirstName()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='first_name']/saml:AttributeValue", _xmlNameSpaceManager);
 
             //some providers (for example Azure AD) put email into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"
-            if (node == null)
-                node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname']/saml:AttributeValue", _xmlNameSpaceManager);
-
             return node == null ? null : node.InnerText;
         }
 
-        public string GetLastName()
+        public virtual string GetLastName()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last_name']/saml:AttributeValue", _xmlNameSpaceManager);
 
@@ -235,39 +228,27 @@ namespace Saml
             return node == null ? null : node.InnerText;
         }
 
-        public string GetDepartment()
+        public virtual string GetDepartment()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department']/saml:AttributeValue", _xmlNameSpaceManager);
             return node == null ? null : node.InnerText;
         }
 
-        public string GetPhone()
+        public virtual string GetPhone()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone']/saml:AttributeValue", _xmlNameSpaceManager);
-            if (node == null)
-                node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/telephonenumber']/saml:AttributeValue", _xmlNameSpaceManager);
             return node == null ? null : node.InnerText;
         }
 
-        public string GetCompany()
+        public virtual string GetCompany()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/companyname']/saml:AttributeValue", _xmlNameSpaceManager);
             return node == null ? null : node.InnerText;
         }
 
-        public List<string> GetGroups()
+        public virtual List<string> GetGroups()
         {
-            // this is only valid for azure claims.
-            XmlNodeList node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
-
-            List<string> group_ids = new List<string>();
-
-            foreach (XmlNode node in node_list)
-            {
-                group_ids.Add(node.InnerText);
-            }
-
-            return group_ids;
+            return null;
         }
 
         //returns namespace manager, we need one b/c MS says so... Otherwise XPath doesnt work in an XML doc with namespaces
