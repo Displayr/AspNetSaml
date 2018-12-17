@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml;
 
 namespace Saml
 {
-    class MicrosoftResponse : Response
+    public class MicrosoftResponse : Response
     {
         public MicrosoftResponse(string certificate_str) : base(certificate_str)
         {
@@ -45,7 +41,7 @@ namespace Saml
 
         public override string GetPhone()
         {
-            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/telephonenumber']/saml:AttributeValue", _xmlNameSpaceManager);
+            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Phone number']/saml:AttributeValue", _xmlNameSpaceManager);
             return node == null ? null : node.InnerText;
         }
 
@@ -69,6 +65,5 @@ namespace Saml
 
             return group_ids;
         }
-
     }
 }

@@ -199,7 +199,8 @@ namespace Saml
 
         public virtual string GetDisplayName()
         {
-            return null;
+            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname']/saml:AttributeValue", _xmlNameSpaceManager);
+            return node == null ? null : node.InnerText;
         }
 
         public virtual string GetEmail()
@@ -222,9 +223,7 @@ namespace Saml
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='last_name']/saml:AttributeValue", _xmlNameSpaceManager);
 
-            //some providers (for example Azure AD) put email into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"
-            if (node == null)
-                node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname']/saml:AttributeValue", _xmlNameSpaceManager);
+            //some providers (for example Azure AD) put email into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
             return node == null ? null : node.InnerText;
         }
 

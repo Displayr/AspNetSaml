@@ -42,8 +42,7 @@ namespace Saml.Test
             Assert.AreEqual("04567843543", homephone);
             Assert.AreEqual("Displayr", company_name);
 
-            Assert.AreEqual("12345678-testing1-testing2", groups[0]);
-            Assert.AreEqual("87654321-testing4-testing3", groups[1]);
+            Assert.IsNull(groups);
         }
 
         /// <summary>This test method loads an empty XML SAML response and a legitimate certificate
@@ -83,7 +82,7 @@ namespace Saml.Test
             Response response = new Response(Constants.VALID_CERTIFICATE);
 
             string xml_contents = GetResourceContents(Constants.INVALID_XML_RESPONSE_RESOURCE);
-
+            
             var load_xml_exception = Assert.ThrowsException<XmlException>(() => { response.LoadXml(xml_contents); });
 
             Assert.IsFalse(response.IsValid());

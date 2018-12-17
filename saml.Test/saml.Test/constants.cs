@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Saml.Test
 {
-    class Constants
+    public class Constants
     {
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
 MIIC8DCCAdigAwIBAgIQFRsCueNmH6dLF0CkDs5zIzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
@@ -45,8 +45,9 @@ unr4TOQQAYtnBQT4DCGs
         public const string EMPTY_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
 -----END CERTIFICATE-----";
 
-        public const string VALID_XML_RESPONSE_RESOURCE = "Saml.Test.valid_response.xml";
-        public const string INVALID_XML_RESPONSE_RESOURCE = "Saml.Test.invalid_response.xml";
-        public const string EMPTY_XML_RESPONSE_RESOURCE = "Saml.Test.empty_response.xml";
+        public const string VALID_XML_RESPONSE_RESOURCE     = "Saml.Test.valid_response.xml";
+        public const string INVALID_XML_RESPONSE_RESOURCE   = "Saml.Test.invalid_response.xml";
+        public const string EMPTY_XML_RESPONSE_RESOURCE     = "Saml.Test.empty_response.xml";
+        public const string MICROSOFT_XML_RESPONSE_RESOURCE = "Saml.Test.microsoft_response_valid.xml";
     }
 }

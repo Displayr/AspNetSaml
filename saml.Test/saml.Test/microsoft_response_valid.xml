@@ -1,25 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_7fde3471-967b-4c5f-9b2b-efaa586bb8f5" Version="2.0" IssueInstant="2018-12-05T05:45:42.554Z" Destination="https://localhost:44376/Home/WelcomeUser" InResponseTo="_3d89261c-e59d-4b80-b65f-74a921075798">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_cdc3b2b0-0657-4e28-ae4a-ab68c3636417" Version="2.0" IssueInstant="2018-12-17T01:02:08.665Z" Destination="https://localhost:44376/Home/WelcomeUser" InResponseTo="_147b1b6d-2184-44b1-8230-81d95fb9c4fe">
   <Issuer xmlns="urn:oasis:names:tc:SAML:2.0:assertion">https://sts.windows.net/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/</Issuer>
   <samlp:Status>
     <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success" />
   </samlp:Status>
-  <Assertion xmlns="urn:oasis:names:tc:SAML:2.0:assertion" ID="_a46864cb-7e92-4043-bbbf-67fe24ca4285" IssueInstant="2018-12-05T05:45:42.554Z" Version="2.0">
+  <Assertion xmlns="urn:oasis:names:tc:SAML:2.0:assertion" ID="_dd3e524d-fe0a-4acc-8310-09b00743c6a0" IssueInstant="2018-12-17T01:02:08.665Z" Version="2.0">
     <Issuer>https://sts.windows.net/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/</Issuer>
     <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
       <SignedInfo>
         <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
         <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
-        <Reference URI="#_a46864cb-7e92-4043-bbbf-67fe24ca4285">
+        <Reference URI="#_dd3e524d-fe0a-4acc-8310-09b00743c6a0">
           <Transforms>
             <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
             <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
           </Transforms>
           <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
-          <DigestValue>IOk88Etjov5ku13VLJ6gHZTspGvfOCkj3QYbLDddWWM=</DigestValue>
+          <DigestValue>nd9VHJZFMBhCCD1SNIG0N2JsEu4T/sTz8b61OA+osjU=</DigestValue>
         </Reference>
       </SignedInfo>
-      <SignatureValue>bLILLBmtwtuRfMLK/ihXIsHi41ajS//K/vNiGH82K+uvPW9TRujpzJv2FwGeLCCcs2AC9KqNkWDiE3O1XCOMeLhs8v/VtlciQSab7WheXRq+b7W7LObQzBr3saqxqpyowdQoN1QdkzCzQCkL+zEO/n+Lu6zqqCSykeCacNPmAqSRvMqJT/hxhZV7Zavlj67T9xW6WIJk3+Zwc4uUDyiQTY3HGiEBPWmGaW2lSJV/erMvFNH2zyBex8cPYbD2Ze8NVkVu0g7GChoE4+bJfZyUCKWUN/BRzeX2HaDOFYZAPG1VbOXHIRcc1SxHKOnHD1iXLakzWuNrE8kuTGcIu7undw==</SignatureValue>
+      <SignatureValue>KzO58mSnSUoorYxZiNfGCTVHT+Up7mc+GRO2Q3w9KHV1ovqN5ou8dbbl9kZfcqn+OOVl63xRSVB+E5bCJz39ZlRWw9Cibh0fswTSJ1HLYvChCQpEAuJZsD0hYPCdfnfL3WK295OiBGTQ3m412Bh5LIpRxv2zUnm8ZQS1qEKkcFJzxzTcE2jTQCLbkKjdWMwjLzDp3AiLcwV61Mllmh0cI8fsAWOG3nMhHDlPq2z6OS0i+3z1df7sBzctm9cP/6wcLGtVoZ+VJ0SH0VAv16qzabHqXZsOxcpFomq1mFte/MEBeQcO63u3pKYmvXhIboQnecS531gxOeDht8EjLQwu4w==</SignatureValue>
       <KeyInfo>
         <X509Data>
           <X509Certificate>MIIC8DCCAdigAwIBAgIQFRsCueNmH6dLF0CkDs5zIzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0xODEyMDMwMTQ4MjVaFw0yMTEyMDMwMTQ4MjVaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx8WKyZTYdJcCB8Yh2Y/cs1U1/DXgNc//Wt9JROTv95j1YEtkLMY1/F2hyBKql9Ypn1i2Zv7d2cQ85GGnVYi3tKiELpgXzc9eebyYholNbAgFO7kL2Zum2gUvHAWXB8qSIisJWTU46fCZ/0VUy8I+/j0S9q2Ats1slK1+rZ7KixOXq/taRMI9f0xo8l5EIpaQiMPw5NdcLLZXwPaYK973+ec3CtuauHHgGHN8jmgvA0LSWBlvzAsjcFLb+TCthQxsCPmws/1P8KRln7RxjJqbeIdt5TslbgmxSJ7pAlsb+8qUPoYRlpwIsERX94kZq/NqwAtgH58ruVDz8zrn8aH8fQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAtIGv9jyjF4wxS8LTxw/tfJi3jOr5Z54DRY3z1oKRtEvz907fIL9oRNhL4L+VsEyi1dGMqFAbysY8z7Pe5f/Za1RwSEVF5RjxHydnckLaguquZwfLGBHtJnCeF2LeAVS1WbWowCNjiOJ9l/q+BCzlXZRTV4S9TrXp33hGYob6owgiz1CflTYIfj6h/yyM80QBaQwa4zNjS4UbgHb+SK+x/YH/BY6SFB9WqqSUbwPTkxGKNxC/A8CX8tpSXlVyXjN2Y7UsDaCkj/TGRSatTqPA6GIKx3AQMAvs/wkla2iHWoQYEn/fN6Mwc10i7M4AevA81unr4TOQQAYtnBQT4DCGs</X509Certificate>
@@ -27,12 +27,12 @@
       </KeyInfo>
     </Signature>
     <Subject>
-      <NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">george@george.com</NameID>
+      <NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">interns@displayr.com</NameID>
       <SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-        <SubjectConfirmationData InResponseTo="_3d89261c-e59d-4b80-b65f-74a921075798" NotOnOrAfter="2018-12-05T05:50:42.554Z" Recipient="https://localhost:44376/Home/WelcomeUser" />
+        <SubjectConfirmationData InResponseTo="_147b1b6d-2184-44b1-8230-81d95fb9c4fe" NotOnOrAfter="2018-12-17T01:07:08.665Z" Recipient="https://localhost:44376/Home/WelcomeUser" />
       </SubjectConfirmation>
     </Subject>
-    <Conditions NotBefore="2018-12-05T05:40:42.554Z" NotOnOrAfter="2018-12-05T06:40:42.554Z">
+    <Conditions NotBefore="2018-12-17T00:57:08.650Z" NotOnOrAfter="2018-12-17T01:57:08.650Z">
       <AudienceRestriction>
         <Audience>spn:15eedc3e-ead5-47c8-8424-a98027d91da7</Audience>
       </AudienceRestriction>
@@ -44,12 +44,13 @@
       <Attribute Name="http://schemas.microsoft.com/identity/claims/objectidentifier">
         <AttributeValue>d0da4e9e-3609-4f53-aaeb-2f3f58478ce2</AttributeValue>
       </Attribute>
-      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname">
-        <AttributeValue>George Willy</AttributeValue>
+      <Attribute Name="http://schemas.microsoft.com/identity/claims/displayname">
+        <AttributeValue>Intern one (incorrect)</AttributeValue>
       </Attribute>
       <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/groups">
-        <AttributeValue>12345678-testing1-testing2</AttributeValue>
-        <AttributeValue>87654321-testing4-testing3</AttributeValue>
+        <AttributeValue>af95480a-5829-4aba-be82-12d633fcfa5a</AttributeValue>
+        <AttributeValue>461ee5e9-6499-4f7d-b0ba-735dcc44fdc1</AttributeValue>
+        <AttributeValue>11b4175a-a8b9-4ea5-b9b2-697223cc51f5</AttributeValue>
       </Attribute>
       <Attribute Name="http://schemas.microsoft.com/identity/claims/identityprovider">
         <AttributeValue>https://sts.windows.net/97fb2e3d-d978-44e1-bb74-0aa0109189b5/</AttributeValue>
@@ -60,29 +61,32 @@
       <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/wids">
         <AttributeValue>62e90394-69f5-4237-9190-012177145e10</AttributeValue>
       </Attribute>
-      <Attribute Name="first_name">
-        <AttributeValue>George</AttributeValue>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
+        <AttributeValue>Intern</AttributeValue>
       </Attribute>
-      <Attribute Name="last_name">
-        <AttributeValue>Willy</AttributeValue>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
+        <AttributeValue>One</AttributeValue>
       </Attribute>
-      <Attribute Name="User.email">
-        <AttributeValue>george@george.com</AttributeValue>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+        <AttributeValue>intern.one@displayr.com</AttributeValue>
       </Attribute>
       <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name">
-        <AttributeValue>george@george.com</AttributeValue>
+        <AttributeValue>intern.one@displayr.com</AttributeValue>
       </Attribute>
-      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department">
-        <AttributeValue>Car repairs</AttributeValue>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Department">
+        <AttributeValue>Programming</AttributeValue>
       </Attribute>
-      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone">
-        <AttributeValue>04567843543</AttributeValue>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Company">
+        <AttributeValue>Numbers International Pty Ltd</AttributeValue>
       </Attribute>
-      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/companyname">
-        <AttributeValue>Displayr</AttributeValue>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Display name">
+        <AttributeValue>Intern one (correct)</AttributeValue>
+      </Attribute>
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Phone number">
+        <AttributeValue>0451675123</AttributeValue>
       </Attribute>
     </AttributeStatement>
-    <AuthnStatement AuthnInstant="2018-12-05T05:45:42.429Z" SessionIndex="_a46864cb-7e92-4043-bbbf-67fe24ca4285">
+    <AuthnStatement AuthnInstant="2018-12-17T01:02:08.603Z" SessionIndex="_dd3e524d-fe0a-4acc-8310-09b00743c6a0">
       <AuthnContext>
         <AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</AuthnContextClassRef>
       </AuthnContext>
