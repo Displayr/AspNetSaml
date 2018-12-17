@@ -1,8 +1,8 @@
 /*	Jitbit's simple SAML 2.0 component for ASP.NET
-	https://github.com/jitbit/AspNetSaml/
-	(c) Jitbit LP, 2016
-	Use this freely under the MIT license (see http://choosealicense.com/licenses/mit/)
-	version 1.2
+    https://github.com/jitbit/AspNetSaml/
+    (c) Jitbit LP, 2016
+    Use this freely under the MIT license (see http://choosealicense.com/licenses/mit/)
+    version 1.2
 */
 
 using System;
@@ -15,7 +15,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Generic;
-
+    
 namespace Saml
 {
     /// <summary>
@@ -31,7 +31,7 @@ namespace Saml
             FormatterAlgorithm = typeof(RSAPKCS1SignatureFormatter).FullName;
             DeformatterAlgorithm = typeof(RSAPKCS1SignatureDeformatter).FullName;
         }
-
+        
         public override AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key)
         {
             if (key == null)
@@ -316,11 +316,11 @@ namespace Saml
                     xw.WriteEndElement();
 
                     /*xw.WriteStartElement("samlp", "RequestedAuthnContext", "urn:oasis:names:tc:SAML:2.0:protocol");
-					xw.WriteAttributeString("Comparison", "exact");
-					xw.WriteStartElement("saml", "AuthnContextClassRef", "urn:oasis:names:tc:SAML:2.0:assertion");
-					xw.WriteString("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
-					xw.WriteEndElement();
-					xw.WriteEndElement();*/
+                    xw.WriteAttributeString("Comparison", "exact");
+                    xw.WriteStartElement("saml", "AuthnContextClassRef", "urn:oasis:names:tc:SAML:2.0:assertion");
+                    xw.WriteString("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
+                    xw.WriteEndElement();
+                    xw.WriteEndElement();*/
 
                     xw.WriteEndElement();
                 }
