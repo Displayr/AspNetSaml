@@ -11,7 +11,7 @@ namespace Saml
 
         public override string GetDisplayName()
         {
-            XmlNode node = base._xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Display name']/saml:AttributeValue", _xmlNameSpaceManager);
+            XmlNode node = base._xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dname']/saml:AttributeValue", _xmlNameSpaceManager);
             return node == null ? null : node.InnerText;
         }
 
