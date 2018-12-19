@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saml.Test", "saml.Test\saml
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saml", "Saml\Saml.csproj", "{BD60888A-63CB-4256-8B6F-BBDD6197DB66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saml.Integration", "Saml.Integration\Saml.Integration.csproj", "{92A7A07F-879D-4A1F-A8B2-A753AC1370CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BD60888A-63CB-4256-8B6F-BBDD6197DB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD60888A-63CB-4256-8B6F-BBDD6197DB66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD60888A-63CB-4256-8B6F-BBDD6197DB66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92A7A07F-879D-4A1F-A8B2-A753AC1370CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A7A07F-879D-4A1F-A8B2-A753AC1370CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A7A07F-879D-4A1F-A8B2-A753AC1370CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A7A07F-879D-4A1F-A8B2-A753AC1370CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
