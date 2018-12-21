@@ -13,14 +13,21 @@ namespace Saml.Integration
         public const string PASSWORD_SELECTOR = "#i0118";
         public const string NEXT_BUTTON_SELECTOR = "#idSIButton9";
         public const string SIGN_IN_BUTTON_SELECTOR = "#idSIButton9";
-        public const string NOT_STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back";
+        public const string STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back"; // no we don't want to stay signed in
 
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
         public const string PASSWORD = "Testmyapp5";
 
         public const string REPLY_URL = "https://localhost:44376/Home/WelcomeUser";
         public const string APP_ID = "15eedc3e-ead5-47c8-8424-a98027d91da7";
-        public const string SAML_ENDPOINT = "https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
+        public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/
+                                                86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
+
+        public const string LOGOUT_SELECTOR = @"body > div.navbar.navbar-inverse.navbar-fixed-top > div > 
+                                                div.navbar-collapse.collapse > ul.nav.navbar-nav.navbar-right > 
+                                                li > a";
+
+
 
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
 MIIC8DCCAdigAwIBAgIQFRsCueNmH6dLF0CkDs5zIzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
