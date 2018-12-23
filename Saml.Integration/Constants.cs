@@ -9,11 +9,6 @@ namespace Saml.Integration
     class Constants
     {
         public const string SCREENHOST_PATH = "../../Screenshots/";
-        public const string USERNAME_SELECTOR = "#i0116";
-        public const string PASSWORD_SELECTOR = "#i0118";
-        public const string NEXT_BUTTON_SELECTOR = "#idSIButton9";
-        public const string SIGN_IN_BUTTON_SELECTOR = "#idSIButton9";
-        public const string STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back"; // no we don't want to stay signed in
 
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
         public const string PASSWORD = "Testmyapp5";
@@ -26,6 +21,17 @@ namespace Saml.Integration
         public const string LOGOUT_SELECTOR = @"body > div.navbar.navbar-inverse.navbar-fixed-top > div > 
                                                 div.navbar-collapse.collapse > ul.nav.navbar-nav.navbar-right > 
                                                 li > a";
+        public const string USERNAME_SELECTOR = "#i0116";
+        public const string PASSWORD_SELECTOR = "#i0118";
+        public const string NEXT_BUTTON_SELECTOR = "#idSIButton9";
+        public const string SIGN_IN_BUTTON_SELECTOR = "#idSIButton9";
+        public const string STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back"; // no we don't want to stay signed in
+        public const string DISPLAY_NAME_SELECTOR = "body > div.container.body-content > div.row > div > div:nth-child(1) > div > h4:nth-child(4)";
+        public const string SIGNOUT_MESSAGE_SELECTOR = "#login_workload_logo_text";
+        public const string WRONG_PASSWORD_MESSAGE_SELECTOR = "#passwordError";
+
+        public const string RETURN_INNER_HTML = "(element) => { return element.innerHTML; }";
+        public const string RETURN_INNER_TEXT = "(element) => { return element.innerText; }";
 
 
 

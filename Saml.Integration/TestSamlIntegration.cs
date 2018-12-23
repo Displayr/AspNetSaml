@@ -94,8 +94,8 @@ namespace Saml.Integration
             await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_again.png");
 
             // extract the display name from the page
-            var element = await this.page.QuerySelectorAsync("body > div.container.body-content > div.row > div > div:nth-child(1) > div > h4:nth-child(4)");
-            string display_name = await element.EvaluateFunctionAsync<string>("(element) => { return element.innerHTML; }");
+            var element = await this.page.QuerySelectorAsync(Constants.DISPLAY_NAME_SELECTOR);
+            string display_name = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
 
             await DestroyBrowserAndPageAsync();
 
@@ -115,8 +115,8 @@ namespace Saml.Integration
             SetPassword("Wrong password");
 
             await DoLoginIncorrectAsync();
-            var element = await this.page.QuerySelectorAsync("#passwordError");
-            string text = await element.EvaluateFunctionAsync<string>("(element) => { return element.innerText; }");
+            var element = await this.page.QuerySelectorAsync(Constants.WRONG_PASSWORD_MESSAGE_SELECTOR);
+            string text = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
             
             await DestroyBrowserAndPageAsync();
 
@@ -136,8 +136,8 @@ namespace Saml.Integration
 
             string html_doc = await this.page.GetContentAsync();
 
-            var element = await this.page.QuerySelectorAsync("#login_workload_logo_text");
-            string contents = await element.EvaluateFunctionAsync<string>("(element) => { return element.innerHTML; }");
+            var element = await this.page.QuerySelectorAsync(Constants.SIGNOUT_MESSAGE_SELECTOR);
+            string contents = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
             
             return contents;
         }
@@ -174,8 +174,6 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task<string> DoLoginAsync()
         {
-            Console.WriteLine("Navigating to SSO url: ");
-
             string saml_response = null;
 
             AuthRequest auth = new AuthRequest(
@@ -186,8 +184,6 @@ namespace Saml.Integration
             // goto the micrsoft login page
             string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
             await this.page.GoToAsync(sso_redirect);
-
-            Console.WriteLine("Redirecting to sso url: " + sso_redirect);
 
             await this.page.SetViewportAsync(new ViewPortOptions
             {
@@ -219,8 +215,6 @@ namespace Saml.Integration
 
         async Task DoLoginIncorrectAsync()
         {
-            Console.WriteLine("Navigating to SSO url: ");
-
             AuthRequest auth = new AuthRequest(
                 Constants.APP_ID,        // put your app's "unique ID" here
                 Constants.REPLY_URL      // assertion Consumer Url - the redirect URL where the provider will send authenticated users
@@ -229,8 +223,6 @@ namespace Saml.Integration
             // goto the micrsoft login page
             string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
             await this.page.GoToAsync(sso_redirect);
-
-            Console.WriteLine("Redirecting to sso url: " + sso_redirect);
 
             await this.page.SetViewportAsync(new ViewPortOptions
             {
