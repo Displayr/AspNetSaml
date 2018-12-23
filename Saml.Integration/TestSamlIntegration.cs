@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Text;
-using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PuppeteerSharp;
 using System.Threading.Tasks;
 using System.Web;
-using System.Net;
-using static System.Net.Mime.MediaTypeNames;
 
 /// <summary>
 /// Integration testing for the SAML library AspNet.
@@ -29,14 +25,14 @@ namespace Saml.Integration
         [TestMethod()]
         public async Task TestRedirectToIdentityProviderAsync()
         {
-            await CreateBrowserAndPage();
+            await CreateBrowserAndPageAsync();
 
             SetUsername(Constants.USERNAME);
             SetPassword(Constants.PASSWORD);
 
             string saml_response = await DoLoginAsync();
 
-            await DestroyBrowserAndPage();
+            await DestroyBrowserAndPageAsync();
 
             // grab the SAML token provided by the IDP and ensure 
             // and ensure it contains relevant information
@@ -64,7 +60,7 @@ namespace Saml.Integration
         [TestMethod()]
         public async Task TestRedirectToSignoutAsync()
         {
-            await CreateBrowserAndPage();
+            await CreateBrowserAndPageAsync();
 
             SetUsername(Constants.USERNAME);
             SetPassword(Constants.PASSWORD);
@@ -72,7 +68,7 @@ namespace Saml.Integration
             string saml_response = await DoLoginAsync();
             string logout_response = await DoLogoutAsync();
 
-            await DestroyBrowserAndPage();
+            await DestroyBrowserAndPageAsync();
 
             Assert.AreEqual("You signed out of your account", logout_response);
         }
@@ -84,7 +80,7 @@ namespace Saml.Integration
         [TestMethod()]
         public async Task TestAlreadySignedIn()
         {
-            await CreateBrowserAndPage();
+            await CreateBrowserAndPageAsync();
 
             SetUsername(Constants.USERNAME);
             SetPassword(Constants.PASSWORD);
@@ -93,15 +89,15 @@ namespace Saml.Integration
 
             // try to navigate to the web service again
             // we should already be logged in 
-            await page.GoToAsync("https://localhost:44376/");
-            await page.WaitForNavigationAsync();
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_again.png");
+            await this.page.GoToAsync("https://localhost:44376/");
+            await this.page.WaitForNavigationAsync();
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_again.png");
 
             // extract the display name from the page
-            var element = await page.QuerySelectorAsync("body > div.container.body-content > div.row > div > div:nth-child(1) > div > h4:nth-child(4)");
+            var element = await this.page.QuerySelectorAsync("body > div.container.body-content > div.row > div > div:nth-child(1) > div > h4:nth-child(4)");
             string display_name = await element.EvaluateFunctionAsync<string>("(element) => { return element.innerHTML; }");
 
-            await DestroyBrowserAndPage();
+            await DestroyBrowserAndPageAsync();
 
             Assert.AreEqual("Username: intern1@DISPLAYRSAMLTEST.onmicrosoft.com", display_name);
         }
@@ -113,17 +109,18 @@ namespace Saml.Integration
         [TestMethod()]
         public async Task TestWrongPassword()
         {
-            await CreateBrowserAndPage();
+            await CreateBrowserAndPageAsync();
 
             SetUsername(Constants.USERNAME);
             SetPassword("Wrong password");
 
             await DoLoginIncorrectAsync();
+            var element = await this.page.QuerySelectorAsync("#passwordError");
+            string text = await element.EvaluateFunctionAsync<string>("(element) => { return element.innerText; }");
             
+            await DestroyBrowserAndPageAsync();
 
-
-
-            await DestroyBrowserAndPage();
+            Assert.AreEqual("Your account or password is incorrect. If you don't remember your password, reset it now.", text);
         }
 
         /// <summary> This function uses the PuppeteerSharp module to perform single sign out. 
@@ -149,7 +146,7 @@ namespace Saml.Integration
         /// objects.
         /// </summary>
         /// <returns></returns>
-        async Task CreateBrowserAndPage()
+        async Task CreateBrowserAndPageAsync()
         {
             var options = new LaunchOptions { Headless = true };
 
@@ -162,7 +159,7 @@ namespace Saml.Integration
         /// <summary> Destroys the headless chrome browser and the page object.
         /// </summary>
         /// <returns></returns>
-        async Task DestroyBrowserAndPage()
+        async Task DestroyBrowserAndPageAsync()
         {
             await this.page.CloseAsync();
             await this.browser.CloseAsync();
@@ -188,18 +185,18 @@ namespace Saml.Integration
 
             // goto the micrsoft login page
             string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
-            await page.GoToAsync(sso_redirect);
+            await this.page.GoToAsync(sso_redirect);
 
             Console.WriteLine("Redirecting to sso url: " + sso_redirect);
 
-            await page.SetViewportAsync(new ViewPortOptions
+            await this.page.SetViewportAsync(new ViewPortOptions
             {
                 Width = 2560,
                 Height = 1080
             });
 
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_0.png");
-            await page.WaitForNavigationAsync();
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_0.png");
+            await this.page.WaitForNavigationAsync();
 
             // sign in with our username + password
             await DoEnterUsernameAsync();
@@ -207,14 +204,14 @@ namespace Saml.Integration
             await DoEnterPasswordAsync();
             await DoSignInAsync();
 
-            await page.ClickAsync(Constants.STAY_SIGNED_IN_BUTTON_SELECTOR);
+            await this.page.ClickAsync(Constants.STAY_SIGNED_IN_BUTTON_SELECTOR);
 
             // this is actually a request from the azure IDP
             WaitForOptions w = new WaitForOptions();
             w.Timeout = 10000;
 
-            var response = await page.WaitForRequestAsync(Constants.REPLY_URL, w);
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_5.png");
+            var response = await this.page.WaitForRequestAsync(Constants.REPLY_URL, w);
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_5.png");
 
             saml_response = response.PostData.ToString();
             return saml_response;
@@ -224,8 +221,6 @@ namespace Saml.Integration
         {
             Console.WriteLine("Navigating to SSO url: ");
 
-            string saml_response = null;
-
             AuthRequest auth = new AuthRequest(
                 Constants.APP_ID,        // put your app's "unique ID" here
                 Constants.REPLY_URL      // assertion Consumer Url - the redirect URL where the provider will send authenticated users
@@ -233,18 +228,18 @@ namespace Saml.Integration
 
             // goto the micrsoft login page
             string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
-            await page.GoToAsync(sso_redirect);
+            await this.page.GoToAsync(sso_redirect);
 
             Console.WriteLine("Redirecting to sso url: " + sso_redirect);
 
-            await page.SetViewportAsync(new ViewPortOptions
+            await this.page.SetViewportAsync(new ViewPortOptions
             {
                 Width = 2560,
                 Height = 1080
             });
 
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_0.png");
-            await page.WaitForNavigationAsync();
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_0.png");
+            await this.page.WaitForNavigationAsync();
 
             // sign in with our username + password
             await DoEnterUsernameAsync();
@@ -255,28 +250,28 @@ namespace Saml.Integration
 
         async Task DoEnterUsernameAsync()
         {
-            await page.TypeAsync(Constants.USERNAME_SELECTOR, this.username);
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_1.png");
+            await this.page.TypeAsync(Constants.USERNAME_SELECTOR, this.username);
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_1.png");
         }
 
         async Task DoSumitUsernameAsync()
         {
-            await page.ClickAsync(Constants.NEXT_BUTTON_SELECTOR);
-            await page.WaitForNavigationAsync();
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_2.png");
+            await this.page.ClickAsync(Constants.NEXT_BUTTON_SELECTOR);
+            await this.page.WaitForNavigationAsync();
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_2.png");
         }
 
         async Task DoEnterPasswordAsync()
         {
-            await page.TypeAsync(Constants.PASSWORD_SELECTOR, this.password);
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_3.png");
+            await this.page.TypeAsync(Constants.PASSWORD_SELECTOR, this.password);
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_3.png");
         }
 
         async Task DoSignInAsync()
         {
-            await page.ClickAsync(Constants.SIGN_IN_BUTTON_SELECTOR);
-            await page.WaitForNavigationAsync();
-            await page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_4.png");
+            await this.page.ClickAsync(Constants.SIGN_IN_BUTTON_SELECTOR);
+            await this.page.WaitForNavigationAsync();
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_4.png");
         }
 
         void SetUsername(string username)
