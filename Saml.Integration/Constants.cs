@@ -13,6 +13,7 @@ namespace Saml.Integration
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
         public const string PASSWORD = "Testmyapp5";
 
+        public const string HOME_PAGE_URL = "https://localhost:44376/";
         public const string REPLY_URL = "https://localhost:44376/Home/WelcomeUser";
         public const string APP_ID = "15eedc3e-ead5-47c8-8424-a98027d91da7";
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/
@@ -29,6 +30,10 @@ namespace Saml.Integration
         public const string DISPLAY_NAME_SELECTOR = "body > div.container.body-content > div.row > div > div:nth-child(1) > div > h4:nth-child(4)";
         public const string SIGNOUT_MESSAGE_SELECTOR = "#login_workload_logo_text";
         public const string WRONG_PASSWORD_MESSAGE_SELECTOR = "#passwordError";
+        public const string LOGIN_BUTTON_SELECTOR = @"body > div.navbar.navbar-inverse.navbar-fixed-top > div > div.navbar-collapse.collapse > 
+                                                     ul.nav.navbar-nav.navbar-right > li:nth-child(2) > a";
+        public const string WELCOME_MESSAGE_SELECTOR = "body > div.container.body-content > div.row > div > h2";
+
 
         public const string RETURN_INNER_HTML = "(element) => { return element.innerHTML; }";
         public const string RETURN_INNER_TEXT = "(element) => { return element.innerText; }";

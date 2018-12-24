@@ -68,9 +68,22 @@ namespace Saml.Integration
             string saml_response = await DoLoginAsync();
             string logout_response = await DoLogoutAsync();
 
+            // go back to the home page and check the contents on the page 
+            // to make sure the service has logged us out.
+            await this.page.GoToAsync(Constants.HOME_PAGE_URL);
+            await this.page.WaitForNavigationAsync();
+            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "logout_home.png");
+
+            var element = await this.page.QuerySelectorAsync(Constants.LOGIN_BUTTON_SELECTOR);
+            string login_text = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
+
+            var welcome_element = await this.page.QuerySelectorAsync(Constants.WELCOME_MESSAGE_SELECTOR);
+            string welcome_text = await welcome_element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
+            
             await DestroyBrowserAndPageAsync();
 
-            Assert.AreEqual("You signed out of your account", logout_response);
+            Assert.AreEqual("Login", login_text);
+            Assert.AreEqual("Welcome to the SAML2 POC:", welcome_text);
         }
 
         /// <summary> This test ensures that that the webpage maintains state and does not prompt the user 
@@ -89,7 +102,7 @@ namespace Saml.Integration
 
             // try to navigate to the web service again
             // we should already be logged in 
-            await this.page.GoToAsync("https://localhost:44376/");
+            await this.page.GoToAsync(Constants.HOME_PAGE_URL);
             await this.page.WaitForNavigationAsync();
             await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_again.png");
 
@@ -100,27 +113,6 @@ namespace Saml.Integration
             await DestroyBrowserAndPageAsync();
 
             Assert.AreEqual("Username: intern1@DISPLAYRSAMLTEST.onmicrosoft.com", display_name);
-        }
-
-        /// <summary> The test ensures that if the user enters the wrong password at the login screen,
-        /// then the appropriate error status is returned.
-        /// </summary>
-        /// <returns></returns>
-        [TestMethod()]
-        public async Task TestWrongPassword()
-        {
-            await CreateBrowserAndPageAsync();
-
-            SetUsername(Constants.USERNAME);
-            SetPassword("Wrong password");
-
-            await DoLoginIncorrectAsync();
-            var element = await this.page.QuerySelectorAsync(Constants.WRONG_PASSWORD_MESSAGE_SELECTOR);
-            string text = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
-            
-            await DestroyBrowserAndPageAsync();
-
-            Assert.AreEqual("Your account or password is incorrect. If you don't remember your password, reset it now.", text);
         }
 
         /// <summary> This function uses the PuppeteerSharp module to perform single sign out. 
@@ -211,33 +203,6 @@ namespace Saml.Integration
 
             saml_response = response.PostData.ToString();
             return saml_response;
-        }
-
-        async Task DoLoginIncorrectAsync()
-        {
-            AuthRequest auth = new AuthRequest(
-                Constants.APP_ID,        // put your app's "unique ID" here
-                Constants.REPLY_URL      // assertion Consumer Url - the redirect URL where the provider will send authenticated users
-            );
-
-            // goto the micrsoft login page
-            string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
-            await this.page.GoToAsync(sso_redirect);
-
-            await this.page.SetViewportAsync(new ViewPortOptions
-            {
-                Width = 2560,
-                Height = 1080
-            });
-
-            await this.page.ScreenshotAsync(Constants.SCREENHOST_PATH + "login_0.png");
-            await this.page.WaitForNavigationAsync();
-
-            // sign in with our username + password
-            await DoEnterUsernameAsync();
-            await DoSumitUsernameAsync();
-            await DoEnterPasswordAsync();
-            await DoSignInAsync();
         }
 
         async Task DoEnterUsernameAsync()
