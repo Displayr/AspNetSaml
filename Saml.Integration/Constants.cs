@@ -8,16 +8,18 @@ namespace Saml.Integration
 {
     class Constants
     {
-        public const string SCREENHOST_PATH = "../../Screenshots/";
+        public const string SCREENSHOT_PATH = "../../Screenshots/";
 
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
         public const string PASSWORD = "Testmyapp5";
 
         public const string HOME_PAGE_URL = "https://localhost:44376/";
-        public const string REPLY_URL = "https://localhost:44376/Home/WelcomeUser";
+        public const string REPLY_URL = @"https://saml-test55.azurewebsites.net/api/HttpTrigger1?code=EnzGd2u543rsIDiR1vaRHQNmbhmSdUZhN5xW2VoA5atqssI5fjhq9w==";
+
         public const string APP_ID = "15eedc3e-ead5-47c8-8424-a98027d91da7";
-        public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/
-                                                86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
+        public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
+        public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
+
 
         public const string LOGOUT_SELECTOR = @"body > div.navbar.navbar-inverse.navbar-fixed-top > div > 
                                                 div.navbar-collapse.collapse > ul.nav.navbar-nav.navbar-right > 
@@ -38,8 +40,7 @@ namespace Saml.Integration
         public const string RETURN_INNER_HTML = "(element) => { return element.innerHTML; }";
         public const string RETURN_INNER_TEXT = "(element) => { return element.innerText; }";
 
-
-
+        // Azure's certificate 
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
 MIIC8DCCAdigAwIBAgIQFRsCueNmH6dLF0CkDs5zIzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
 EylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0xODEyMDMwMTQ4
