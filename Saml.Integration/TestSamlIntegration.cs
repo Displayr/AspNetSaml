@@ -58,17 +58,10 @@ namespace Saml.Integration
             SetUsername(Constants.USERNAME);
             SetPassword(Constants.PASSWORD);
 
-            string saml_response = await DoLoginAsync();
-            string logout_response = await DoLogoutAsync();
+            await DoLoginAsync();
+            await DoLogoutAsync();
 
-            // navigating back to the SSO login url should prompt us to login again 
-            AuthRequest auth = new AuthRequest(
-               Constants.APP_ID,        // put your app's "unique ID" here
-               Constants.REPLY_URL      // assertion Consumer Url - the redirect URL where the provider will send authenticated users
-           );
-
-            // goto the micrsoft login page
-            string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
+            string sso_redirect = GetRedirectUrl();
             await this.page.GoToAsync(sso_redirect);
 
             await this.page.SetViewportAsync(new ViewPortOptions
@@ -78,11 +71,14 @@ namespace Saml.Integration
             });
 
             await this.page.WaitForNavigationAsync();
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "re_login.png");
+            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "signed_out.png");
 
-            var element = await this.page.WaitForSelectorAsync(Constants.USERNAME_SELECTOR);
+            // verify that we need to login again 
+            string title = await this.page.GetTitleAsync();
 
             await DestroyBrowserAndPageAsync();
+
+            Assert.AreEqual("Sign in to your account", title);
         }
 
         /// <summary> This test ensures that that the webpage maintains state and does not prompt the user 
@@ -97,21 +93,26 @@ namespace Saml.Integration
             SetUsername(Constants.USERNAME);
             SetPassword(Constants.PASSWORD);
 
-            string saml_response = await DoLoginAsync();
+            await DoLoginAsync();
 
-            // try to navigate to the web service again
-            // we should already be logged in 
-            await this.page.GoToAsync(Constants.HOME_PAGE_URL);
+            // goto the micrsoft login page again and the SAMl response should be shown
+            string sso_redirect = GetRedirectUrl();
+
+            await this.page.GoToAsync(sso_redirect);
             await this.page.WaitForNavigationAsync();
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_again.png");
 
-            // extract the display name from the page
-            var element = await this.page.QuerySelectorAsync(Constants.DISPLAY_NAME_SELECTOR);
-            string display_name = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
+            string saml_response = await ExtractXmlAsync();
+            string saml_url_decoded = HttpUtility.UrlDecode(saml_response);
+
+            MicrosoftResponse ms_response = new MicrosoftResponse(Constants.VALID_CERTIFICATE);
+            ms_response.LoadXml(saml_url_decoded);
+
+            string display_name = ms_response.GetDisplayName();
 
             await DestroyBrowserAndPageAsync();
 
-            Assert.AreEqual("Username: intern1@DISPLAYRSAMLTEST.onmicrosoft.com", display_name);
+            Assert.AreEqual("intern1", display_name);
         }
 
         /// <summary> Instantiates a headless chrome browser and a page object to hold the rendered 
@@ -146,21 +147,14 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task<string> DoLoginAsync()
         {
-            AuthRequest auth = new AuthRequest(
-                Constants.APP_ID,        // put your app's "unique ID" here
-                Constants.REPLY_URL      // assertion Consumer Url - the redirect URL where the provider will send authenticated users
-            );
-
-            // goto the micrsoft login page
-            string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
-            await this.page.GoToAsync(sso_redirect);
-
             await this.page.SetViewportAsync(new ViewPortOptions
             {
                 Width = 2560,
                 Height = 1080
             });
 
+            string redirect = GetRedirectUrl();
+            await this.page.GoToAsync(redirect);
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_0.png");
             await this.page.WaitForNavigationAsync();
 
@@ -175,9 +169,7 @@ namespace Saml.Integration
 
             // extract the XMl from the page 
             //string page_contents = await this.page.GetContentAsync();
-
-            var element = await this.page.WaitForSelectorAsync("body > pre");
-            string saml_response = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
+            string saml_response = await ExtractXmlAsync();
             
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_5.png");
 
@@ -188,7 +180,7 @@ namespace Saml.Integration
         /// This is assuming the user is already logged in.
         /// </summary>
         /// <returns></returns>
-        async Task<string> DoLogoutAsync()
+        async Task DoLogoutAsync()
         {
             await this.page.GoToAsync(Constants.SIGNOUT_URL);
 
@@ -200,8 +192,13 @@ namespace Saml.Integration
 
             await this.page.WaitForNavigationAsync();
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "logout.png");
+        }
 
-            return null;
+        async Task<string> ExtractXmlAsync()
+        {
+            var element = await this.page.WaitForSelectorAsync("body > pre");
+            string xml = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
+            return xml;
         }
 
         async Task DoEnterUsernameAsync()
@@ -238,6 +235,18 @@ namespace Saml.Integration
         void SetPassword(string password)
         {
             this.password = password;
+        }
+
+        string GetRedirectUrl()
+        {
+            AuthRequest auth = new AuthRequest(
+                Constants.APP_ID,        // put your app's "unique ID" here
+                Constants.REPLY_URL      // assertion Consumer Url - the redirect URL where the provider will send authenticated users
+            );
+
+            // goto the micrsoft login page
+            string sso_redirect = auth.GetRedirectUrl(Constants.SAML_ENDPOINT);
+            return sso_redirect;
         }
     }
 }
