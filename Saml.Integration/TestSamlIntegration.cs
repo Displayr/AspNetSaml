@@ -121,7 +121,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task CreateBrowserAndPageAsync()
         {
-            var options = new LaunchOptions { Headless = true };
+            var options = new LaunchOptions { Headless = false };
 
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
 
@@ -197,13 +197,19 @@ namespace Saml.Integration
         async Task<string> ExtractXmlAsync()
         {
             var element = await this.page.WaitForSelectorAsync("body > pre");
-            string xml = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT);
+            string xml = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT_FUNC);
             return xml;
         }
 
         async Task DoEnterUsernameAsync()
         {
-            await this.page.TypeAsync(Constants.USERNAME_SELECTOR, this.username);
+            // await this.page.TypeAsync(Constants.USERNAME_SELECTOR, this.username);
+            string javascript_func = Constants.ReturnSelectorFunction("loginfmt");
+
+            string selector = await this.page.EvaluateFunctionAsync<string>(javascript_func);
+
+            var element = await this.page.WaitForSelectorAsync("#" + selector);
+            await element.TypeAsync(Constants.USERNAME);
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_1.png");
         }
 
@@ -216,7 +222,12 @@ namespace Saml.Integration
 
         async Task DoEnterPasswordAsync()
         {
-            await this.page.TypeAsync(Constants.PASSWORD_SELECTOR, this.password);
+            string javascript_func = Constants.ReturnSelectorFunction("passwd");
+
+            string selector = await this.page.EvaluateExpressionAsync<string>(javascript_func);
+
+            var element = await this.page.WaitForSelectorAsync("#" + selector);
+            await element.TypeAsync(Constants.PASSWORD);
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_3.png");
         }
 

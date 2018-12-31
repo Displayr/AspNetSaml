@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Saml.Integration
 {
-    class Constants
+    public class Constants
     {
         public const string SCREENSHOT_PATH = "../../Screenshots/";
 
@@ -20,25 +20,26 @@ namespace Saml.Integration
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
         public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
 
-
-        public const string LOGOUT_SELECTOR = @"body > div.navbar.navbar-inverse.navbar-fixed-top > div > 
-                                                div.navbar-collapse.collapse > ul.nav.navbar-nav.navbar-right > 
-                                                li > a";
         public const string USERNAME_SELECTOR = "#i0116";
         public const string PASSWORD_SELECTOR = "#i0118";
         public const string NEXT_BUTTON_SELECTOR = "#idSIButton9";
         public const string SIGN_IN_BUTTON_SELECTOR = "#idSIButton9";
         public const string STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back"; // no we don't want to stay signed in
-        public const string DISPLAY_NAME_SELECTOR = "body > div.container.body-content > div.row > div > div:nth-child(1) > div > h4:nth-child(4)";
         public const string SIGNOUT_MESSAGE_SELECTOR = "#login_workload_logo_text";
         public const string WRONG_PASSWORD_MESSAGE_SELECTOR = "#passwordError";
-        public const string LOGIN_BUTTON_SELECTOR = @"body > div.navbar.navbar-inverse.navbar-fixed-top > div > div.navbar-collapse.collapse > 
-                                                     ul.nav.navbar-nav.navbar-right > li:nth-child(2) > a";
-        public const string WELCOME_MESSAGE_SELECTOR = "body > div.container.body-content > div.row > div > h2";
 
-
-        public const string RETURN_INNER_HTML = "(element) => { return element.innerHTML; }";
-        public const string RETURN_INNER_TEXT = "(element) => { return element.innerText; }";
+        public const string RETURN_INNER_HTML_FUNC = "(element) => { return element.innerHTML; }";
+        public const string RETURN_INNER_TEXT_FUNC = "(element) => { return element.innerText; }";
+        
+        public static string ReturnSelectorFunction(string name)
+        {
+            return "() => {" +
+                "var node_list = document.getElementsByName('" + name + "');" +
+                "var id = node_list[0].id;"+
+                "console.log(node_list); console.log(id); " +
+                "return id;" +
+            "}";
+        }
 
         // Azure's certificate 
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
