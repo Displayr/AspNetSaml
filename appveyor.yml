@@ -16,10 +16,10 @@ before_build:
     # Display .NET Core version
     - cmd: dotnet --version
     # Display minimal restore text
-    - cmd: dotnet restore ./src/src.csproj --verbosity m
+    #- cmd: dotnet restore ./src/src.csproj --verbosity m
 
 build_script:
-    - cmd: dotnet publish ./src/src.csproj
+    #- cmd: dotnet publish ./src/src.csproj
 
 after_build:
     # Nothing to do after build 
