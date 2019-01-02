@@ -1,0 +1,28 @@
+version: '1.0.{build}'
+image: Visual Studio 2017
+init:
+    # Good practise, because Windows line endings are different from Unix/Linux ones
+    - cmd: git config --global core.autocrlf true
+
+install:
+    # Nothing to install
+
+before_build:
+    # Display .NET Core version
+    - cmd: dotnet --version
+    # Display minimal restore text
+    - cmd: dotnet restore ./src/src.csproj --verbosity m
+
+build_script:
+    - cmd: dotnet publish ./src/src.csproj
+
+after_build:
+    # Nothing to do after build 
+
+test_script:
+    # try auto mode
+
+on_finish :
+    # any cleanup in here
+
+deploy: off
