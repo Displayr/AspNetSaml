@@ -42,25 +42,32 @@ tpSXlVyXjN2Y7UsDaCkj/TGRSatTqPA6GIKx3AQMAvs/wkla2iHWoQYEn/fN6Mwc10i7M4AevA81
 unr4TOQQAYtnBQT4DCGs
 -----END CERTIFICATE-----";
 
-        /// <summary> This function takes the name of a HTML element and returns its id.
+        /// <summary> This function takes in the name of a HTML element and returns a javascript function 
+        /// that can find the corresponding ID of the element. The javascript function is returned as a string.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public static string GetSelectorIdJavascript(string name)
         {
-            return "() => {" +
-                "var node_list = document.getElementsByName('" + name + "');" +
-                "var id = node_list[0].id;" +
-                "console.log('" + name + "'); console.log(node_list); console.log(id); " +
-                "return id;" +
-            "}";
+            return  "() => {" +
+                        "var node_list = document.getElementsByName('" + name + "');" +
+                        "var id = node_list[0].id;" +
+                        "console.log('" + name + "'); console.log(node_list); console.log(id); " +
+                        "return id;" +
+                    "}";
         }
 
+        /// <summary> This function takes in the value of an element and returns a javascript function 
+        /// that performs a click() on the corresponding element.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string ClickButtonJavascript(string value)
         {
-            return "() => { var n = document.querySelectorAll(\"input[value = \'" + value + "\']\"); " +
-                "n[0].click();" +
-                "}";
+            return "() => { " +
+                        "var n = document.querySelectorAll(\"input[value = \'" + value + "\']\"); " +
+                        "n[0].click();" +
+                    "}";
         }
     }
 }
