@@ -20,9 +20,6 @@ namespace Saml.Integration
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
         public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
 
-        public const string NEXT_BUTTON_SELECTOR = "#idSIButton9";
-        public const string SIGN_IN_BUTTON_SELECTOR = "#idSIButton9";
-        public const string STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back"; // no we don't want to stay signed in
         public const string XML_CONTENTS_SELECTOR = "body > pre";
 
         public const string RETURN_INNER_TEXT_FUNC = "(element) => { return element.innerText; }";
@@ -49,7 +46,7 @@ unr4TOQQAYtnBQT4DCGs
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string ReturnSelectorFunction(string name)
+        public static string GetSelectorIdJavascript(string name)
         {
             return "() => {" +
                 "var node_list = document.getElementsByName('" + name + "');" +
@@ -57,6 +54,13 @@ unr4TOQQAYtnBQT4DCGs
                 "console.log('" + name + "'); console.log(node_list); console.log(id); " +
                 "return id;" +
             "}";
+        }
+
+        public static string ClickButtonJavascript(string value)
+        {
+            return "() => { var n = document.querySelectorAll(\"input[value = \'" + value + "\']\"); " +
+                "n[0].click();" +
+                "}";
         }
     }
 }

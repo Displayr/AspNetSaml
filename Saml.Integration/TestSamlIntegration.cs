@@ -164,7 +164,7 @@ namespace Saml.Integration
             await DoEnterPasswordAsync();
             await DoSignInAsync();
 
-            await this.page.ClickAsync(Constants.STAY_SIGNED_IN_BUTTON_SELECTOR);
+            await this.page.EvaluateFunctionAsync(Constants.ClickButtonJavascript("No"));
             await this.page.WaitForNavigationAsync();
 
             // extract the XMl from the page 
@@ -209,7 +209,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task DoEnterUsernameAsync()
         {
-            string javascript_func = Constants.ReturnSelectorFunction("loginfmt");
+            string javascript_func = Constants.GetSelectorIdJavascript("loginfmt");
             string selector = await this.page.EvaluateFunctionAsync<string>(javascript_func);
 
             Assert.IsNotNull(selector);
@@ -225,7 +225,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task DoSumitUsernameAsync()
         {
-            await this.page.ClickAsync(Constants.NEXT_BUTTON_SELECTOR);
+            await this.page.EvaluateFunctionAsync(Constants.ClickButtonJavascript("Next"));
             await this.page.WaitForNavigationAsync();
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_2.png");
         }
@@ -235,7 +235,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task DoEnterPasswordAsync()
         {
-            string javascript_func = Constants.ReturnSelectorFunction("passwd");
+            string javascript_func = Constants.GetSelectorIdJavascript("passwd");
             var selector = await this.page.EvaluateFunctionAsync<string>(javascript_func);
 
             Assert.IsNotNull(selector);
@@ -251,7 +251,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task DoSignInAsync()
         {
-            await this.page.ClickAsync(Constants.SIGN_IN_BUTTON_SELECTOR);
+            await this.page.EvaluateFunctionAsync(Constants.ClickButtonJavascript("Sign in"));
             await this.page.WaitForNavigationAsync();
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_4.png");
         }
