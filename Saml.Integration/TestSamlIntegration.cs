@@ -43,7 +43,7 @@ namespace Saml.Integration
 
             string display_name = ms_response.GetDisplayName();
 
-            Assert.AreEqual("intern1", display_name);
+            Assert.AreEqual(Constants.EXPECTED_DISPLAY_NAME, display_name);
         }
 
         /// <summary> This test ensures that after signing in using the SAML library, we are also able 
@@ -112,7 +112,7 @@ namespace Saml.Integration
 
             await DestroyBrowserAndPageAsync();
 
-            Assert.AreEqual("intern1", display_name);
+            Assert.AreEqual(Constants.EXPECTED_DISPLAY_NAME, display_name);
         }
 
         /// <summary> Instantiates a headless chrome browser and a page object to hold the rendered 
@@ -194,25 +194,35 @@ namespace Saml.Integration
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "logout.png");
         }
 
+        /// <summary> Extracts the XML content that is returned from the Azure function "saml-test55"
+        /// </summary>
+        /// <returns></returns>
         async Task<string> ExtractXmlAsync()
         {
-            var element = await this.page.WaitForSelectorAsync("body > pre");
+            var element = await this.page.WaitForSelectorAsync(Constants.XML_CONTENTS_SELECTOR);
             string xml = await element.EvaluateFunctionAsync<string>(Constants.RETURN_INNER_TEXT_FUNC);
             return xml;
         }
 
+        /// <summary> Types our password into the input box on the Microsoft login page.
+        /// </summary>
+        /// <returns></returns>
         async Task DoEnterUsernameAsync()
         {
-            // await this.page.TypeAsync(Constants.USERNAME_SELECTOR, this.username);
             string javascript_func = Constants.ReturnSelectorFunction("loginfmt");
-
             string selector = await this.page.EvaluateFunctionAsync<string>(javascript_func);
+
+            Assert.IsNotNull(selector);
 
             var element = await this.page.WaitForSelectorAsync("#" + selector);
             await element.TypeAsync(Constants.USERNAME);
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_1.png");
         }
 
+        /// <summary> Submits the entered username at the login page and waits for the browser to 
+        /// progress to the next page (password page).
+        /// </summary>
+        /// <returns></returns>
         async Task DoSumitUsernameAsync()
         {
             await this.page.ClickAsync(Constants.NEXT_BUTTON_SELECTOR);
@@ -220,17 +230,25 @@ namespace Saml.Integration
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_2.png");
         }
 
+        /// <summary> Types the password into the password field at the login page.
+        /// </summary>
+        /// <returns></returns>
         async Task DoEnterPasswordAsync()
         {
             string javascript_func = Constants.ReturnSelectorFunction("passwd");
+            var selector = await this.page.EvaluateFunctionAsync<string>(javascript_func);
 
-            string selector = await this.page.EvaluateExpressionAsync<string>(javascript_func);
+            Assert.IsNotNull(selector);
 
             var element = await this.page.WaitForSelectorAsync("#" + selector);
             await element.TypeAsync(Constants.PASSWORD);
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_3.png");
         }
 
+        /// <summary> Clicks the signin button on the Microsoft login page and waits for the 
+        /// browser navigate to the "stay signed in?" dialog.
+        /// </summary>
+        /// <returns></returns>
         async Task DoSignInAsync()
         {
             await this.page.ClickAsync(Constants.SIGN_IN_BUTTON_SELECTOR);
@@ -238,16 +256,25 @@ namespace Saml.Integration
             await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_4.png");
         }
 
+        /// <summary> Sets the username to use to log into Microsoft Azure Active Directory.
+        /// </summary>
+        /// <param name="username"></param>
         void SetUsername(string username)
         {
             this.username = username;
         }
 
+        /// <summary> Sets the password corresponding to the username 
+        /// </summary>
+        /// <param name="username"></param>
         void SetPassword(string password)
         {
             this.password = password;
         }
 
+        /// <summary> Returns the url used to perform SAML single sign in with Azure active directory.
+        /// </summary>
+        /// <returns></returns>
         string GetRedirectUrl()
         {
             AuthRequest auth = new AuthRequest(

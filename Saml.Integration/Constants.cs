@@ -10,36 +10,22 @@ namespace Saml.Integration
     {
         public const string SCREENSHOT_PATH = "../../Screenshots/";
 
+        public const string EXPECTED_DISPLAY_NAME = "intern1";
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
         public const string PASSWORD = "Testmyapp5";
 
-        public const string HOME_PAGE_URL = "https://localhost:44376/";
         public const string REPLY_URL = @"https://saml-test55.azurewebsites.net/api/HttpTrigger1?code=EnzGd2u543rsIDiR1vaRHQNmbhmSdUZhN5xW2VoA5atqssI5fjhq9w==";
 
         public const string APP_ID = "15eedc3e-ead5-47c8-8424-a98027d91da7";
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
         public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
 
-        public const string USERNAME_SELECTOR = "#i0116";
-        public const string PASSWORD_SELECTOR = "#i0118";
         public const string NEXT_BUTTON_SELECTOR = "#idSIButton9";
         public const string SIGN_IN_BUTTON_SELECTOR = "#idSIButton9";
         public const string STAY_SIGNED_IN_BUTTON_SELECTOR = "#idBtn_Back"; // no we don't want to stay signed in
-        public const string SIGNOUT_MESSAGE_SELECTOR = "#login_workload_logo_text";
-        public const string WRONG_PASSWORD_MESSAGE_SELECTOR = "#passwordError";
+        public const string XML_CONTENTS_SELECTOR = "body > pre";
 
-        public const string RETURN_INNER_HTML_FUNC = "(element) => { return element.innerHTML; }";
         public const string RETURN_INNER_TEXT_FUNC = "(element) => { return element.innerText; }";
-        
-        public static string ReturnSelectorFunction(string name)
-        {
-            return "() => {" +
-                "var node_list = document.getElementsByName('" + name + "');" +
-                "var id = node_list[0].id;"+
-                "console.log(node_list); console.log(id); " +
-                "return id;" +
-            "}";
-        }
 
         // Azure's certificate 
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
@@ -58,5 +44,19 @@ wgiz1CflTYIfj6h/yyM80QBaQwa4zNjS4UbgHb+SK+x/YH/BY6SFB9WqqSUbwPTkxGKNxC/A8CX8
 tpSXlVyXjN2Y7UsDaCkj/TGRSatTqPA6GIKx3AQMAvs/wkla2iHWoQYEn/fN6Mwc10i7M4AevA81
 unr4TOQQAYtnBQT4DCGs
 -----END CERTIFICATE-----";
+
+        /// <summary> This function takes the name of a HTML element and returns its id.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string ReturnSelectorFunction(string name)
+        {
+            return "() => {" +
+                "var node_list = document.getElementsByName('" + name + "');" +
+                "var id = node_list[0].id;" +
+                "console.log('" + name + "'); console.log(node_list); console.log(id); " +
+                "return id;" +
+            "}";
+        }
     }
 }
