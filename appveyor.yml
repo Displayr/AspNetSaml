@@ -4,6 +4,7 @@ image: Visual Studio 2017
 branches:
   only:
   - appveyor
+  - saml-integration-tests
 
 init:
     # Good practise, because Windows line endings are different from Unix/Linux ones
@@ -30,7 +31,7 @@ artifacts:
 
 test_script:
     # try auto mode
-
+    
 on_finish :
     # any cleanup in here
 
