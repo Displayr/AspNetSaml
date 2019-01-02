@@ -121,7 +121,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task CreateBrowserAndPageAsync()
         {
-            var options = new LaunchOptions { Headless = false };
+            var options = new LaunchOptions { Headless = true };
 
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
 
