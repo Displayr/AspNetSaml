@@ -26,9 +26,9 @@
 #x86/
 #bld/
 #[Bb]in/
-[Oo]bj/
 #[Ll]og/
 #dist/
+[Oo]bj/
 saml.Test/saml.Test/bin/[Dd]ebug/
 saml.Test/saml.Test/bin/[Rr]elease/
 Saml.Integration/bin/[Dd]ebug/
