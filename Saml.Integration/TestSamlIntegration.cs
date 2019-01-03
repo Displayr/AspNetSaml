@@ -71,7 +71,7 @@ namespace Saml.Integration
             });
 
             await this.page.WaitForNavigationAsync();
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "signed_out.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "signed_out.png");
 
             // verify that we need to login again 
             string title = await this.page.GetTitleAsync();
@@ -100,7 +100,7 @@ namespace Saml.Integration
 
             await this.page.GoToAsync(sso_redirect);
             await this.page.WaitForNavigationAsync();
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_again.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_again.png");
 
             string saml_response = await ExtractXmlAsync();
             string saml_url_decoded = HttpUtility.UrlDecode(saml_response);
@@ -155,7 +155,7 @@ namespace Saml.Integration
 
             string redirect = GetRedirectUrl();
             await this.page.GoToAsync(redirect);
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_0.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_0.png");
             await this.page.WaitForNavigationAsync();
 
             // sign in with our username + password
@@ -171,7 +171,7 @@ namespace Saml.Integration
             //string page_contents = await this.page.GetContentAsync();
             string saml_response = await ExtractXmlAsync();
             
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_5.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_5.png");
 
             return saml_response;
         }
@@ -191,7 +191,7 @@ namespace Saml.Integration
             });
 
             await this.page.WaitForNavigationAsync();
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "logout.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "logout.png");
         }
 
         /// <summary> Extracts the XML content that is returned from the Azure function "saml-test55"
@@ -216,7 +216,7 @@ namespace Saml.Integration
 
             var element = await this.page.WaitForSelectorAsync("#" + selector);
             await element.TypeAsync(Constants.USERNAME);
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_1.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_1.png");
         }
 
         /// <summary> Submits the entered username at the login page and waits for the browser to 
@@ -227,7 +227,7 @@ namespace Saml.Integration
         {
             await this.page.EvaluateFunctionAsync(Constants.ClickButtonJavascript("Next"));
             await this.page.WaitForNavigationAsync();
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_2.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_2.png");
         }
 
         /// <summary> Types the password into the password field at the login page.
@@ -242,7 +242,7 @@ namespace Saml.Integration
 
             var element = await this.page.WaitForSelectorAsync("#" + selector);
             await element.TypeAsync(Constants.PASSWORD);
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_3.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_3.png");
         }
 
         /// <summary> Clicks the signin button on the Microsoft login page and waits for the 
@@ -253,7 +253,7 @@ namespace Saml.Integration
         {
             await this.page.EvaluateFunctionAsync(Constants.ClickButtonJavascript("Sign in"));
             await this.page.WaitForNavigationAsync();
-            await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_4.png");
+            //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_4.png");
         }
 
         /// <summary> Sets the username to use to log into Microsoft Azure Active Directory.
