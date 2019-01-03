@@ -23,11 +23,6 @@ build_script:
 after_build:
     # Nothing to do after build 
 
-artifacts:
-    - path: '\Saml\bin\Debug\Saml.dll'
-      name: Saml Assembly
-      type: WebDeployPackage
-
 test_script:
     # try auto mode
     
