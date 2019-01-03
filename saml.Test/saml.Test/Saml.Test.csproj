@@ -72,9 +72,6 @@
     <Reference Include="PuppeteerSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\PuppeteerSharp.1.11.1\lib\netstandard2.0\PuppeteerSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Saml">
-      <HintPath>..\..\Saml\bin\Debug\Saml.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -136,6 +133,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="microsoft_response_valid.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Saml\Saml.csproj">
+      <Project>{bd60888a-63cb-4256-8b6f-bbdd6197db66}</Project>
+      <Name>Saml</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

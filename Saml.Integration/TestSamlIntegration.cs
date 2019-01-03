@@ -13,7 +13,7 @@ namespace Saml.Integration
     public class TestSamlIntegration
     {
         Browser browser;
-        Page pag;
+        Page page;
 
         string username;
         string password;
