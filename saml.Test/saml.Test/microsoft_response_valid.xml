@@ -44,7 +44,7 @@
       <Attribute Name="http://schemas.microsoft.com/identity/claims/objectidentifier">
         <AttributeValue>d0da4e9e-3609-4f53-aaeb-2f3f58478ce2</AttributeValue>
       </Attribute>
-      <Attribute Name="http://schemas.microsoft.com/identity/claims/displayname">
+      <Attribute Name="http://schemas.microsoft.com/identity/claims/dname">
         <AttributeValue>Intern one (incorrect)</AttributeValue>
       </Attribute>
       <Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/groups">
@@ -79,7 +79,7 @@
       <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Company">
         <AttributeValue>Numbers International Pty Ltd</AttributeValue>
       </Attribute>
-      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Display name">
+      <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dname">
         <AttributeValue>Intern one (correct)</AttributeValue>
       </Attribute>
       <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/Phone number">
