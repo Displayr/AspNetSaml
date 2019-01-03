@@ -29,10 +29,6 @@ bld/
 [Ll]og/
 dist/
 [Oo]bj/
-!Saml/bin/*
-#saml.Test/saml.Test/bin/[Dd]ebug/
-#saml.Test/saml.Test/bin/[Rr]elease/
-#Saml.Integration/bin/[Dd]ebug/
 
 # Visual Studio 2015 cache/options directory
 .vs/
