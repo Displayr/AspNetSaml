@@ -1,6 +1,8 @@
 # AspNetSaml
 
-Very simple SAML 2.0 "consumer" implementation in C#.
+[![Build status](https://ci.appveyor.com/api/projects/status/j47v6dygoqpwknay?svg=true)](https://ci.appveyor.com/project/NumbersInternational/aspnetsaml)
+
+Very simple SAML 2.0 "consumer" implementation in C#. It's a *SAML client* library, not a *SAML server*, allows adding SAML single-sign-on to your ASP.NET app, but *not* to provide auth services to other apps.
 
 It's a *SAML client* library, not a *SAML server*, allows adding SAML single-sign-on to your ASP.NET app, but *not* to provide auth services to other apps.
 
