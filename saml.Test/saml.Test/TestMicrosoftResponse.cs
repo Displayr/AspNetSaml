@@ -13,7 +13,7 @@ namespace Saml.Test
         [TestMethod()]
         public void TestGetters()
         {
-            MicrosoftResponse response = new MicrosoftResponse(Constants.VALID_CERTIFICATE);
+            Response response = new Response(Constants.VALID_CERTIFICATE);
 
             string xml_contents = GetResourceContents(Constants.MICROSOFT_XML_RESPONSE_RESOURCE);
             response.LoadXml(xml_contents);
