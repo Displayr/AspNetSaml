@@ -1,5 +1,7 @@
 # AspNetSaml
 
+[![Build status](https://ci.appveyor.com/api/projects/status/j47v6dygoqpwknay?svg=true)](https://ci.appveyor.com/project/NumbersInternational/aspnetsaml)
+
 Very simple SAML 2.0 "consumer" implementation in C#. It's a *SAML client* library, not a *SAML server*, allows adding SAML single-sign-on to your ASP.NET app, but *not* to provide auth services to other apps.
 
 Consists of **one short C# file** you can throw into your project (or [install via nuget](#new-nuget)) and start using it. Originally forked from OneLogin's .NET SAML library, but we had to fix a lot of stuff...
