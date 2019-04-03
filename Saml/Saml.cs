@@ -15,7 +15,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Generic;
-    
+
 namespace Saml
 {
     /// <summary>
@@ -31,7 +31,7 @@ namespace Saml
             FormatterAlgorithm = typeof(RSAPKCS1SignatureFormatter).FullName;
             DeformatterAlgorithm = typeof(RSAPKCS1SignatureDeformatter).FullName;
         }
-        
+
         public override AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key)
         {
             if (key == null)
@@ -76,8 +76,7 @@ namespace Saml
             {
                 cert = new X509Certificate2();
                 cert.Import(certificate);
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 throw new LoadCertificateException("Failed to load certificate", ex);
             }
@@ -107,7 +106,7 @@ namespace Saml
         private Certificate _certificate;
         protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
 
-        public string Xml { get { return _xmlDoc.OuterXml; } }
+        public string Xml => _xmlDoc.OuterXml;
 
         public Response(string certificateStr)
         {
@@ -141,8 +140,7 @@ namespace Saml
             try
             {
                 nodeList = _xmlDoc.SelectNodes("//ds:Signature", _xmlNameSpaceManager);
-            }
-            catch (Exception exception)
+            } catch (Exception)
             {
                 return false;
             }

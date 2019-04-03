@@ -6,6 +6,8 @@ using System.Web;
 /// <summary>
 /// Integration testing for the SAML library AspNet.
 /// These tests ensure that the SAML library is able to work with the Azure active directory.
+/// 
+/// This test relies on an Azure function being live with C# code in the Saml.Integration.Function folder
 /// </summary>
 namespace Saml.Integration
 {
@@ -41,9 +43,9 @@ namespace Saml.Integration
             MicrosoftResponse ms_response = new MicrosoftResponse(Constants.VALID_CERTIFICATE);
             ms_response.LoadXml(saml_url_decoded);
 
-            string display_name = ms_response.GetDisplayName();
+            string first_name = ms_response.GetFirstName();
 
-            Assert.AreEqual(Constants.EXPECTED_DISPLAY_NAME, display_name);
+            Assert.AreEqual(Constants.EXPECTED_FIRST_NAME, first_name);
         }
 
         /// <summary> This test ensures that after signing in using the SAML library, we are also able 
@@ -108,11 +110,11 @@ namespace Saml.Integration
             MicrosoftResponse ms_response = new MicrosoftResponse(Constants.VALID_CERTIFICATE);
             ms_response.LoadXml(saml_url_decoded);
 
-            string display_name = ms_response.GetDisplayName();
+            string first_name = ms_response.GetFirstName();
 
             await DestroyBrowserAndPageAsync();
 
-            Assert.AreEqual(Constants.EXPECTED_DISPLAY_NAME, display_name);
+            Assert.AreEqual(Constants.EXPECTED_FIRST_NAME, first_name);
         }
 
         /// <summary> Instantiates a headless chrome browser and a page object to hold the rendered 
@@ -121,7 +123,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task CreateBrowserAndPageAsync()
         {
-            var options = new LaunchOptions { Headless = true };
+            var options = new LaunchOptions { Headless = false };
 
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
 
@@ -235,12 +237,14 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task DoEnterPasswordAsync()
         {
+            //await page.WaitForSelectorAsync("//input[@name='passwd' and contains(@class, 'form-control')]");
             string javascript_func = Constants.GetSelectorIdJavascript("passwd");
             var selector = await this.page.EvaluateFunctionAsync<string>(javascript_func);
 
             Assert.IsNotNull(selector);
 
             var element = await this.page.WaitForSelectorAsync("#" + selector);
+            await page.WaitForTimeoutAsync(1000);
             await element.TypeAsync(Constants.PASSWORD);
             //await this.page.ScreenshotAsync(Constants.SCREENSHOT_PATH + "login_3.png");
         }

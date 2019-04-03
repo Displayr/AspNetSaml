@@ -98,12 +98,10 @@ if (samlResponse.IsValid())
 Depending on your .NET version, your Project should reference `System.Security` 
 for .NET Framework and `System.Security.Cryptography.Xml` for .NET Core.
 
-# (NEW!) Nuget
+# Nuget
 
 I've published this to Nuget.
 
-`Install-Package AspNetSaml`
+`Install-Package Displayr.AspNetSaml`
 
-This will simply add the cs-file to the root of your project.
-
-A version of this library has been used for years in production in our [helpdesk app](https://jitbit.github.com/helpdesk/).
+This will add a reference to a compiled version of this assembly.
