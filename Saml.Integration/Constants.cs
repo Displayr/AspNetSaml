@@ -10,13 +10,13 @@ namespace Saml.Integration
     {
         public const string SCREENSHOT_PATH = "../../Screenshots/";
 
-        public const string EXPECTED_DISPLAY_NAME = "intern1";
+        public const string EXPECTED_FIRST_NAME = "intern1";
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
-        public const string PASSWORD = "Testmyapp5";
+        public const string PASSWORD = "Testmyapp6";
 
         public const string REPLY_URL = @"https://saml-test55.azurewebsites.net/api/HttpTrigger1?code=EnzGd2u543rsIDiR1vaRHQNmbhmSdUZhN5xW2VoA5atqssI5fjhq9w==";
 
-        public const string APP_ID = "15eedc3e-ead5-47c8-8424-a98027d91da7";
+        public const string APP_ID = "8566d1b6-3343-4b62-a941-ca75b451984c";
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
         public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
 

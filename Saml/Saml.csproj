@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Saml</RootNamespace>
     <AssemblyName>Saml</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,5 +48,23 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Saml.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Saml.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rmdir /Q /S $(ProjectDir)nuget &amp; mkdir $(ProjectDir)nuget
+
+mkdir $(ProjectDir)nuget\lib
+
+copy $(TargetPath) $(ProjectDir)nuget\lib
+
+copy $(ProjectDir)Saml.nuspec $(ProjectDir)nuget
+
+cd $(ProjectDir)nuget
+
+$(ProjectDir)nuget.exe pack Saml.nuspec</PostBuildEvent>
+  </PropertyGroup>
 </Project>

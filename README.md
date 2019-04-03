@@ -84,12 +84,10 @@ BLAHBLAHBLAHBLAHBLAHBLAHBLAHBLAHBLAHBLAHBLAHBLAH123543==
 
 Project should reference `System.Security`
 
-# (NEW!) Nuget
+# Nuget
 
 I've published this to Nuget.
 
-`Install-Package AspNetSaml`
+`Install-Package Displayr.AspNetSaml`
 
-This will simply add the cs-file to the root of your project.
-
-A version of this library has been used for years in production in our [helpdesk app](https://www.jitbit.com/hosted-helpdesk/).
+This will add a reference to a compiled version of this assembly.
