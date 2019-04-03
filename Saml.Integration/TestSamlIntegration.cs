@@ -40,7 +40,7 @@ namespace Saml.Integration
             // string saml_response = response.PostData.ToString();
             string saml_url_decoded = HttpUtility.UrlDecode(saml_response);
 
-            MicrosoftResponse ms_response = new MicrosoftResponse(Constants.VALID_CERTIFICATE);
+            Response ms_response = new Response(Constants.VALID_CERTIFICATE);
             ms_response.LoadXml(saml_url_decoded);
 
             string first_name = ms_response.GetFirstName();
@@ -107,7 +107,7 @@ namespace Saml.Integration
             string saml_response = await ExtractXmlAsync();
             string saml_url_decoded = HttpUtility.UrlDecode(saml_response);
 
-            MicrosoftResponse ms_response = new MicrosoftResponse(Constants.VALID_CERTIFICATE);
+            Response ms_response = new Response(Constants.VALID_CERTIFICATE);
             ms_response.LoadXml(saml_url_decoded);
 
             string first_name = ms_response.GetFirstName();
@@ -123,7 +123,7 @@ namespace Saml.Integration
         /// <returns></returns>
         async Task CreateBrowserAndPageAsync()
         {
-            var options = new LaunchOptions { Headless = false };
+            var options = new LaunchOptions { Headless = true };
 
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
 

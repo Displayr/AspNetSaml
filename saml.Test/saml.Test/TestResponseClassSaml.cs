@@ -42,7 +42,9 @@ namespace Saml.Test
             Assert.AreEqual("04567843543", homephone);
             Assert.AreEqual("Displayr", company_name);
 
-            Assert.IsNull(groups);
+            Assert.AreEqual(2, groups.Count);
+            Assert.AreEqual("12345678-testing1-testing2", groups[0]);
+            Assert.AreEqual("87654321-testing4-testing3", groups[1]);
         }
 
         /// <summary>This test method loads an empty XML SAML response and a legitimate certificate
