@@ -553,3 +553,5 @@ StdOut*.txt
 
 Screenshots/
 *.png
+
+Saml/nuget/
