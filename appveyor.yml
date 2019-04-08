@@ -1,5 +1,6 @@
 version: '1.0.{build}'
-image: Visual Studio 2017
+build_cloud: azure
+image: preloaded-vm-next
 
 branches:
   only:
@@ -18,7 +19,7 @@ before_build:
     - cmd: nuget restore 
 
 build_script:
-    # Not sure whats happening here
+    # Not sure whats happening here 
 
 after_build:
     # Nothing to do after build 
