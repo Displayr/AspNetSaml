@@ -1,9 +1,10 @@
 version: '1.0.{build}'
-image: Visual Studio 2017
+build_cloud: azure
+image: preloaded-vm
 
 branches:
   only:
-  - saml-integration-tests
+  - debug_withmt
 
 init:
     # Good practise, because Windows line endings are different from Unix/Linux ones
