@@ -16,7 +16,8 @@ install:
 before_build:
     # Display .NET Core version
     - cmd: dotnet --version
-    - cmd: nuget restore 
+    - cmd: nuget restore     
+    - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 build_script:
     # Not sure whats happening here
