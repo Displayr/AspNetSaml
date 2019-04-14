@@ -6,7 +6,4 @@
     <ItemGroup>
       <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.0" />
     </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="rmdir /Q /S $(ProjectDir)nuget &amp; mkdir $(ProjectDir)nuget&#xD;&#xA;&#xD;&#xA;mkdir $(ProjectDir)nuget\lib&#xD;&#xA;&#xD;&#xA;mkdir $(ProjectDir)nuget\lib\netstandard2.0&#xD;&#xA;&#xD;&#xA;copy $(TargetPath) $(ProjectDir)nuget\lib\netstandard2.0&#xD;&#xA;&#xD;&#xA;copy $(ProjectDir)Saml.nuspec $(ProjectDir)nuget&#xD;&#xA;&#xD;&#xA;cd $(ProjectDir)nuget&#xD;&#xA;&#xD;&#xA;nuget.exe pack Saml.nuspec" />
-    </Target>
 </Project>
