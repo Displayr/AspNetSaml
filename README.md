@@ -93,3 +93,12 @@ I've published this to Nuget.
 `Install-Package Displayr.AspNetSaml`
 
 This will add a reference to a compiled version of this assembly.
+
+# About Displayr
+
+[![Displayr](https://github.com/Displayr/AspNetSaml/blob/master/displayr_d.jpg?raw=true)](https://www.displayr.com)
+
+Powerful business intelligence and online reporting for survey data. Now hiring...
+
+Company: https://www.displayr.com  
+Careers: https://www.displayr.com/careers/  
