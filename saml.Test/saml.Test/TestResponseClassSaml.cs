@@ -30,6 +30,7 @@ namespace Saml.Test
             string department       = response.GetDepartment();
             string homephone        = response.GetPhone();
             string company_name     = response.GetCompany();
+            string audience = response.Audience;
 
             List<string> groups     = response.GetGroups();
 
@@ -41,6 +42,7 @@ namespace Saml.Test
             Assert.AreEqual("Car repairs", department);
             Assert.AreEqual("04567843543", homephone);
             Assert.AreEqual("Displayr", company_name);
+            Assert.AreEqual("spn:15eedc3e-ead5-47c8-8424-a98027d91da7", audience);
 
             Assert.AreEqual(2, groups.Count);
             Assert.AreEqual("12345678-testing1-testing2", groups[0]);

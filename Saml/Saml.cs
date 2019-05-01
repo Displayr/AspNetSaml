@@ -133,6 +133,23 @@ namespace Saml
             LoadXml(enc.GetString(Convert.FromBase64String(response)));
         }
 
+        /// <summary>Gets the intended audience of this request. This is intended for a multi-tennant IdP initiated request, where we don't yet know
+        /// which tennant in a multi tennanted system this request is for. Once we know we can then use that tennant's certificate to validate the
+        /// rest of the request. If an attacker sends a fake Audience value, it doesn't matter as long as you only trust it as far as choosing an appropriate
+        /// certificate from your data store and nothing else.</summary>
+        public string Audience
+        {
+            get
+            {
+                var nodeList = _xmlDoc.SelectNodes("//samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience", _xmlNameSpaceManager);
+                if (nodeList.Count > 0)
+                {
+                    return nodeList[0].InnerText;
+                }
+                return null;
+            }
+        }
+
         public bool IsValid()
         {
             XmlNodeList nodeList;
