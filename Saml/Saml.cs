@@ -101,7 +101,24 @@ namespace Saml
         }
     }
 
-    public class Response
+    public interface IResponse
+    {
+        void LoadXml(string xml);
+        void LoadXmlFromBase64(string saml_response);
+        string Audience { get; }
+        bool IsValid();
+        string GetNameID();
+        string GetDisplayName();
+        string GetEmail();
+        string GetFirstName();
+        string GetLastName();
+        string GetDepartment();
+        string GetPhone();
+        string GetCompany();
+        List<string> GetGroups();
+    }
+
+    public class Response : IResponse
     {
         protected XmlDocument _xmlDoc;
         private Certificate _certificate;
