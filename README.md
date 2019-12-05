@@ -97,17 +97,19 @@ This will add a reference to a compiled version of this assembly.
 # Nuget Publishing Steps
 
 1. Open the solution in Visual Studio
-2. A Update Saml.Nuspec version number, and please use the SEMVER (https://semver.org/) scheme to decide which digit to increment. Commit this and push.
-   B Update Saml.Nuspec releasenotes fields and put some description of what you changed there. But don't commit this.
-3. From the Package Manage Console, run this command:
+2. Do both a debug build
+3. Copy the build output Saml.dll to the lib folder.
+4. Update Saml.Nuspec version number, and please use the SEMVER (https://semver.org/) scheme to decide which digit to increment. Commit this and push.
+5. Update Saml.Nuspec releasenotes fields and put some description of what you changed there. But don't commit this.
+6. From the Package Manage Console, run this command:
 
 nuget pack Saml\Saml.nuspec
 
-4. This will generate a file like Displayr.AspNetSaml.1.1.0.nupkg in your solution root folder.
-5. Visit https://www.nuget.org/packages/Displayr.AspNetSaml/ and login, and click upload.
-6. Upload the nupkg file generated.
-7. In the preview, enter https://raw.githubusercontent.com/Displayr/AspNetSaml/master/README.md for the doco url.
-8. Click Submit
+7. This will generate a file like Displayr.AspNetSaml.1.1.0.nupkg in your solution root folder.
+8. Visit https://www.nuget.org/packages/Displayr.AspNetSaml/ and login, and click upload.
+9. Upload the nupkg file generated.
+10. In the preview, enter https://raw.githubusercontent.com/Displayr/AspNetSaml/master/README.md for the doco url.
+11. Click Submit
 
 # About Displayr
 
