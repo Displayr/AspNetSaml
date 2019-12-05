@@ -108,6 +108,20 @@ I've published this to Nuget.
 
 This will add a reference to a compiled version of this assembly.
 
+# Nuget Publishing Steps
+
+1. Open the solution in Visual Studio
+2. Update Saml.Nuspec version number, and please use the SEMVER (https://semver.org/) scheme to decide which digit to increment.
+3. From the Package Manage Console, run this command:
+
+nuget pack Saml\Saml.nuspec
+
+4. This will generate a file like Displayr.AspNetSaml.1.1.0.nupkg in your solution root folder.
+5. Visit https://www.nuget.org/packages/Displayr.AspNetSaml/ and login, and click upload.
+6. Upload the nupkg file generated.
+7. In the preview, enter https://raw.githubusercontent.com/Displayr/AspNetSaml/master/README.md for the doco url.
+8. Click Submit
+
 # About Displayr
 
 [![Displayr](https://github.com/Displayr/AspNetSaml/blob/master/displayr_d.jpg?raw=true)](https://www.displayr.com)
