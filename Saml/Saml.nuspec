@@ -12,6 +12,6 @@
     <license type="expression">MIT</license>
     <copyright>displayr.com</copyright>
     <tags>SAML IdP</tags>
-    <releaseNotes>Added getter for Audience value</releaseNotes>
+    <releaseNotes></releaseNotes>
   </metadata>
 </package>

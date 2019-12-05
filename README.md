@@ -97,7 +97,8 @@ This will add a reference to a compiled version of this assembly.
 # Nuget Publishing Steps
 
 1. Open the solution in Visual Studio
-2. Update Saml.Nuspec version number, and please use the SEMVER (https://semver.org/) scheme to decide which digit to increment.
+2. A Update Saml.Nuspec version number, and please use the SEMVER (https://semver.org/) scheme to decide which digit to increment. Commit this and push.
+   B Update Saml.Nuspec releasenotes fields and put some description of what you changed there. But don't commit this.
 3. From the Package Manage Console, run this command:
 
 nuget pack Saml\Saml.nuspec
