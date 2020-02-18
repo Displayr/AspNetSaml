@@ -75,8 +75,7 @@ namespace Saml
         {
             try
             {
-                cert = new X509Certificate2();
-                cert.Import(certificate);
+                cert = new X509Certificate2(certificate);
             } catch (Exception ex)
             {
                 throw new LoadCertificateException("Failed to load certificate", ex);
