@@ -16,7 +16,7 @@ namespace Saml.Integration
 
         public const string REPLY_URL = @"https://saml-test55.azurewebsites.net/api/HttpTrigger1?code=EnzGd2u543rsIDiR1vaRHQNmbhmSdUZhN5xW2VoA5atqssI5fjhq9w==";
 
-        public const string APP_ID = "8566d1b6-3343-4b62-a941-ca75b451984c";
+        public const string APP_ID = "2cb753ec-8174-4f4d-8bb2-a3a50de9cd29";
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
         public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
 
@@ -26,20 +26,20 @@ namespace Saml.Integration
 
         // Azure's certificate 
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
-MIIC8DCCAdigAwIBAgIQFRsCueNmH6dLF0CkDs5zIzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
-EylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0xODEyMDMwMTQ4
-MjVaFw0yMTEyMDMwMTQ4MjVaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQg
-U1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx8WKyZTYdJcC
-B8Yh2Y/cs1U1/DXgNc//Wt9JROTv95j1YEtkLMY1/F2hyBKql9Ypn1i2Zv7d2cQ85GGnVYi3tKiE
-LpgXzc9eebyYholNbAgFO7kL2Zum2gUvHAWXB8qSIisJWTU46fCZ/0VUy8I+/j0S9q2Ats1slK1+
-rZ7KixOXq/taRMI9f0xo8l5EIpaQiMPw5NdcLLZXwPaYK973+ec3CtuauHHgGHN8jmgvA0LSWBlv
-zAsjcFLb+TCthQxsCPmws/1P8KRln7RxjJqbeIdt5TslbgmxSJ7pAlsb+8qUPoYRlpwIsERX94kZ
-q/NqwAtgH58ruVDz8zrn8aH8fQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAtIGv9jyjF4wxS8LTx
-w/tfJi3jOr5Z54DRY3z1oKRtEvz907fIL9oRNhL4L+VsEyi1dGMqFAbysY8z7Pe5f/Za1RwSEVF5
-RjxHydnckLaguquZwfLGBHtJnCeF2LeAVS1WbWowCNjiOJ9l/q+BCzlXZRTV4S9TrXp33hGYob6o
-wgiz1CflTYIfj6h/yyM80QBaQwa4zNjS4UbgHb+SK+x/YH/BY6SFB9WqqSUbwPTkxGKNxC/A8CX8
-tpSXlVyXjN2Y7UsDaCkj/TGRSatTqPA6GIKx3AQMAvs/wkla2iHWoQYEn/fN6Mwc10i7M4AevA81
-unr4TOQQAYtnBQT4DCGs
+MIIC8DCCAdigAwIBAgIQaBn3qbDVJ7ZDYJ1vNoM2mzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
+EylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMDEyMTcyMzU4
+NThaFw0yMzEyMTcyMzU4NThaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQg
+U1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5WucU1KB6d6L
+HFz3TkkQdSE09PVd7VoM0gVtWoaGhywJKRyRykA+nHr1kJ2NwJ51h0jn6dpdXElI7Jr91mXbzmQA
+1wJz9Sf+ham1FFQfCY46Y+kAPKj5U4W8Rr3mRNfQc3YVIeLLZwoRz8by8Bp/0SGvaaD2JSmx1F9E
+mtl8YQQfDF1WBzkkDvDEIWqRKDNiA9tgdOUqjpSHGkIMKBXM2POeyi753nnIgAVtL93c0IIn7txH
+AojOFbIA+mFAL8j/3mxk1RVDgUe3ts4GAyWEhleuA0vtIMqjLsodLbbFaJt3Bwtn6BDWOKuIW8bD
+VFPmDYOAhklvNtf1qHJGfx/qdQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCuf5yi99qZbMnA40aZ
+CSyZ8FL0QkQ9Ts+MWMdw3WnqiKxthfpW0xK/x+P2ym3860Kvji6KoIcCBDKQHz7ApLS/PROSh2xo
+8kkMHjHGxhHq6nctxXpozUJsxj9xpnJ5+VqeD9O8MArWTXfIW1G652UfSTQcqelwglQ4LMd2FK3S
+izr81KNsVYSbXmk2GpA3/YWrfFYQBSGzyf1dwYrr2Kq1WWP2gyKLfc84LsHcz0/RivMdedWn91Va
+0KSXA3g/tcxt/mmw0VRzAQsRnbulE3k4F3jKsm5saZCGZfi60OwGbJokZZ6Wx1gzuvAKyIjdYVr0
+y3eWF9z8XhuBKGWyZ7n0
 -----END CERTIFICATE-----";
 
         /// <summary> This function takes in the name of a HTML element and returns a javascript function 
