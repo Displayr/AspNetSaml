@@ -14,6 +14,8 @@ using System.Security.Cryptography.Xml;
 using System.IO.Compression;
 using System.Text;
 using System.Security.Cryptography;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Saml
 {
@@ -54,13 +56,37 @@ namespace Saml
 		private static bool _initialized = false;
 		public static void Init()
 		{
-			if(!_initialized)
+			if (!_initialized)
 				CryptoConfig.AddAlgorithm(typeof(RSAPKCS1SHA256SignatureDescription), "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
 			_initialized = true;
 		}
 	}
 
-	public partial class Response
+    public class LoadCertificateException : Exception
+    {
+        public LoadCertificateException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+    }
+
+    public interface IResponse
+    {
+        void LoadXml(string xml);
+        void LoadXmlFromBase64(string saml_response);
+        string Audience { get; }
+        bool IsValid();
+        string GetNameID();
+        string GetDisplayName();
+        string GetEmail();
+        string GetFirstName();
+        string GetLastName();
+        string GetDepartment();
+        string GetPhone();
+        string GetCompany();
+        List<string> GetGroups();
+    }
+
+	public partial class Response : IResponse
 	{
 		private static byte[] StringToByteArray(string st)
 		{
@@ -76,7 +102,7 @@ namespace Saml
 		protected readonly X509Certificate2 _certificate;
 		protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
 
-		public string Xml { get { return _xmlDoc.OuterXml; } }
+		public string Xml => _xmlDoc.OuterXml;
 
 		public Response(string certificateStr, string responseString)
 			: this(StringToByteArray(certificateStr), responseString) { }
@@ -91,7 +117,13 @@ namespace Saml
 		public Response(byte[] certificateBytes)
 		{
 			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
-			_certificate = new X509Certificate2(certificateBytes);
+
+            try {
+                _certificate = new X509Certificate2(certificateBytes);
+            } catch (Exception ex) {
+                throw new LoadCertificateException("Failed to load certificate", ex);
+            }
+			
 		}
 
 		public void LoadXml(string xml)
@@ -110,9 +142,35 @@ namespace Saml
 			LoadXml(enc.GetString(Convert.FromBase64String(response)));
 		}
 
+        /// <summary>Gets the intended audience of this request. This is intended for a multi-tennant IdP initiated request, where we don't yet know
+        /// which tennant in a multi tennanted system this request is for. Once we know we can then use that tennant's certificate to validate the
+        /// rest of the request. If an attacker sends a fake Audience value, it doesn't matter as long as you only trust it as far as choosing an appropriate
+        /// certificate from your data store and nothing else.</summary>
+        public string Audience
+        {
+            get
+            {
+                var nodeList = _xmlDoc.SelectNodes("//samlp:Response/saml:Assertion[1]/saml:Conditions/saml:AudienceRestriction/saml:Audience", _xmlNameSpaceManager);
+                if (nodeList.Count > 0)
+                {
+                    return nodeList[0].InnerText;
+                }
+                return null;
+            }
+        }
+
 		public bool IsValid()
 		{
-			XmlNodeList nodeList = _xmlDoc.SelectNodes("//ds:Signature", _xmlNameSpaceManager);
+			XmlNodeList nodeList;
+            
+            // We don't want an exception to be thrown from this class.
+            try 
+            {
+                nodeList = _xmlDoc.SelectNodes("//ds:Signature", _xmlNameSpaceManager);
+            } catch (Exception)
+            {
+                return false;
+            }
 
 			SignedXml signedXml = new SignedXml(_xmlDoc);
 
@@ -164,56 +222,51 @@ namespace Saml
 			return node.InnerText;
 		}
 
-		public virtual string GetUpn()
-		{
-			return GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn");
-		}
+        private string AssertionAttributeValueForWithCoalesce(params string[] names_to_try)
+        {
+            foreach (string name in names_to_try.Union(names_to_try.Select(name => $"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/{name}")))
+            {
+                var attempt = GetCustomAttribute(name);
+                if (attempt != null)
+                    return attempt;
+            }
+            return null;
+        }
 
-		public virtual string GetEmail()
-		{
-			return GetCustomAttribute("User.email")
-				?? GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress") //some providers (for example Azure AD) put last name into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-				?? GetCustomAttribute("mail"); //some providers put last name into an attribute named "mail"
-		}
+        // Each of these methods will try different attributes to ensure compatiability across Microsoft AD and other IdPs.
+		public string GetUpn() => AssertionAttributeValueForWithCoalesce("upn");
 
-		public virtual string GetFirstName()
-		{
-			return GetCustomAttribute("first_name")
-				?? GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname") //some providers (for example Azure AD) put last name into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"
-				?? GetCustomAttribute("User.FirstName")
-				?? GetCustomAttribute("givenName"); //some providers put last name into an attribute named "givenName"
-		}
+        public string GetDisplayName() => AssertionAttributeValueForWithCoalesce("displayname", "dname");
 
-		public virtual string GetLastName()
-		{
-			return GetCustomAttribute("last_name")
-				?? GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname") //some providers (for example Azure AD) put last name into an attribute named "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"
-				?? GetCustomAttribute("User.LastName")
-				?? GetCustomAttribute("sn"); //some providers put last name into an attribute named "sn"
-		}
+		public string GetEmail() => AssertionAttributeValueForWithCoalesce("User.email", "emailaddress", "mail");
 
-		public virtual string GetDepartment()
-		{
-			return GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department");
-		}
+		public string GetFirstName() => AssertionAttributeValueForWithCoalesce("first_name", "givenname", "User.FirstName");
 
-		public virtual string GetPhone()
-		{
-			return GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone")
-				?? GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/telephonenumber");
-		}
+		public string GetLastName() => AssertionAttributeValueForWithCoalesce("last_name", "surname", "User.LastName", "sn");
 
-		public virtual string GetCompany()
-		{
-			return GetCustomAttribute("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/companyname")
-				?? GetCustomAttribute("User.CompanyName");
-		}
+		public string GetDepartment() => AssertionAttributeValueForWithCoalesce("department", "Department");
+
+		public string GetPhone() => AssertionAttributeValueForWithCoalesce("homephone", "telephonenumber", "Phone number");
+
+		public string GetCompany() => AssertionAttributeValueForWithCoalesce("companyname", "Company", "User.CompanyName");
 
 		public string GetCustomAttribute(string attr)
 		{
 			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='" + attr + "']/saml:AttributeValue", _xmlNameSpaceManager);
 			return node == null ? null : node.InnerText;
 		}
+
+        public List<string> GetGroups()
+        {
+            // this is only valid for azure claims.
+            var node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
+            var group_ids = new List<string>();
+            foreach (XmlNode node in node_list)
+            {
+                group_ids.Add(node.InnerText);
+            }
+            return group_ids;
+        }
 
 		//returns namespace manager, we need one b/c MS says so... Otherwise XPath doesnt work in an XML doc with namespaces
 		//see https://stackoverflow.com/questions/7178111/why-is-xmlnamespacemanager-necessary
@@ -244,6 +297,9 @@ namespace Saml
 		public AuthRequest(string issuer, string assertionConsumerServiceUrl)
 		{
 			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
+
+            if (issuer == null || assertionConsumerServiceUrl == null)
+                throw new NullReferenceException();
 
 			_id = "_" + Guid.NewGuid().ToString();
 			_issue_instant = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
