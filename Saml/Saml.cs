@@ -161,6 +161,19 @@ namespace Saml
 			}
 		}
 
+		public DateTime? GetSessionEndDate()
+		{
+			var auth_statement_node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:AuthnStatement", _xmlNameSpaceManager);
+			if (auth_statement_node != null && auth_statement_node.Attributes["SessionNotOnOrAfter"] != null)
+			{
+				if (DateTime.TryParse(auth_statement_node.Attributes["SessionNotOnOrAfter"].Value, out var  expirationDate))
+				{
+					return expirationDate;
+				}
+			}
+			return null;
+		}
+
 		public bool IsValid()
 		{
 			XmlNodeList nodeList;

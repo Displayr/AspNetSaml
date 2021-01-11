@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PuppeteerSharp;
+using System;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -44,8 +45,12 @@ namespace Saml.Integration
             ms_response.LoadXml(saml_url_decoded);
 
             string first_name = ms_response.GetFirstName();
-
             Assert.AreEqual(Constants.EXPECTED_FIRST_NAME, first_name);
+
+            var session_timeout = ms_response.GetSessionEndDate();
+            Assert.IsNotNull(session_timeout);
+            var cur_time = DateTime.UtcNow;
+            Assert.IsTrue(session_timeout > cur_time);
         }
 
         /// <summary> This test ensures that after signing in using the SAML library, we are also able 
