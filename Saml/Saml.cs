@@ -1,9 +1,10 @@
 /*	Jitbit's simple SAML 2.0 component for ASP.NET
-    https://github.com/jitbit/AspNetSaml/
-    (c) Jitbit LP, 2016
-    Use this freely under the MIT license (see http://choosealicense.com/licenses/mit/)
-    version 1.2
+	https://github.com/jitbit/AspNetSaml/
+	(c) Jitbit LP, 2016
+	Use this freely under the Apache license (see https://choosealicense.com/licenses/apache-2.0/)
+	version 1.2.3
 */
+/* Modifications copyright (C) 2021 Displayr Australia Pty Ltd */
 
 using System;
 using System.Web;
@@ -19,357 +20,398 @@ using System.Linq;
 
 namespace Saml
 {
-    /// <summary>
-    /// this class adds support of SHA256 signing to .NET 4.0 and earlier
-    /// (you can use it in .NET 4.5 too, if you don't want a "System.Deployment" dependency)
-    /// </summary>
-    public sealed class RSAPKCS1SHA256SignatureDescription : SignatureDescription
-    {
-        public RSAPKCS1SHA256SignatureDescription()
-        {
-            KeyAlgorithm = typeof(RSACryptoServiceProvider).FullName;
-            DigestAlgorithm = typeof(SHA256Managed).FullName;   // Note - SHA256CryptoServiceProvider is not registered with CryptoConfig
-            FormatterAlgorithm = typeof(RSAPKCS1SignatureFormatter).FullName;
-            DeformatterAlgorithm = typeof(RSAPKCS1SignatureDeformatter).FullName;
-        }
+	/// <summary>
+	/// this class adds support of SHA256 signing to .NET 4.0 and earlier
+	/// (you can use it in .NET 4.5 too, if you don't want a "System.Deployment" dependency)
+	/// </summary>
+	public sealed class RSAPKCS1SHA256SignatureDescription : SignatureDescription
+	{
+		public RSAPKCS1SHA256SignatureDescription()
+		{
+			KeyAlgorithm = typeof(RSACryptoServiceProvider).FullName;
+			DigestAlgorithm = typeof(SHA256Managed).FullName;   // Note - SHA256CryptoServiceProvider is not registered with CryptoConfig
+			FormatterAlgorithm = typeof(RSAPKCS1SignatureFormatter).FullName;
+			DeformatterAlgorithm = typeof(RSAPKCS1SignatureDeformatter).FullName;
+		}
 
-        public override AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key)
-        {
-            if (key == null)
-                throw new ArgumentNullException("key");
+		public override AsymmetricSignatureDeformatter CreateDeformatter(AsymmetricAlgorithm key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
 
-            RSAPKCS1SignatureDeformatter deformatter = new RSAPKCS1SignatureDeformatter(key);
-            deformatter.SetHashAlgorithm("SHA256");
-            return deformatter;
-        }
+			RSAPKCS1SignatureDeformatter deformatter = new RSAPKCS1SignatureDeformatter(key);
+			deformatter.SetHashAlgorithm("SHA256");
+			return deformatter;
+		}
 
-        public override AsymmetricSignatureFormatter CreateFormatter(AsymmetricAlgorithm key)
-        {
-            if (key == null)
-                throw new ArgumentNullException("key");
+		public override AsymmetricSignatureFormatter CreateFormatter(AsymmetricAlgorithm key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
 
-            RSAPKCS1SignatureFormatter formatter = new RSAPKCS1SignatureFormatter(key);
-            formatter.SetHashAlgorithm("SHA256");
-            return formatter;
-        }
+			RSAPKCS1SignatureFormatter formatter = new RSAPKCS1SignatureFormatter(key);
+			formatter.SetHashAlgorithm("SHA256");
+			return formatter;
+		}
 
-        private static bool _initialized = false;
-        public static void Init()
-        {
-            if (!_initialized)
-                CryptoConfig.AddAlgorithm(typeof(RSAPKCS1SHA256SignatureDescription), "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
-            _initialized = true;
-        }
-    }
+		private static bool _initialized = false;
+		public static void Init()
+		{
+			if (!_initialized)
+				CryptoConfig.AddAlgorithm(typeof(RSAPKCS1SHA256SignatureDescription), "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
+			_initialized = true;
+		}
+	}
 
-    public class Certificate
-    {
-        public X509Certificate2 cert;
+	public class LoadCertificateException : Exception
+	{
+		public LoadCertificateException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
+	}
 
-        public void LoadCertificate(string certificate)
-        {
-            LoadCertificate(StringToByteArray(certificate));
-        }
+	public interface IResponse
+	{
+		void LoadXml(string xml);
+		void LoadXmlFromBase64(string saml_response);
+		string Audience { get; }
+		bool IsValid();
+		string GetNameID();
+		string GetDisplayName();
+		string GetEmail();
+		string GetFirstName();
+		string GetLastName();
+		string GetDepartment();
+		string GetPhone();
+		string GetCompany();
+		List<string> GetGroups();
+	}
 
-        public void LoadCertificate(byte[] certificate)
-        {
-            try
-            {
-                cert = new X509Certificate2();
-                cert.Import(certificate);
-            } catch (Exception ex)
-            {
-                throw new LoadCertificateException("Failed to load certificate", ex);
-            }
-        }
+	public partial class Response : IResponse
+	{
+		private static byte[] StringToByteArray(string st)
+		{
+			byte[] bytes = new byte[st.Length];
+			for (int i = 0; i < st.Length; i++)
+			{
+				bytes[i] = (byte)st[i];
+			}
+			return bytes;
+		}
 
-        private byte[] StringToByteArray(string st)
-        {
-            byte[] bytes = new byte[st.Length];
-            for (int i = 0; i < st.Length; i++)
-            {
-                bytes[i] = (byte)st[i];
-            }
-            return bytes;
-        }
-    }
+		protected XmlDocument _xmlDoc;
+		protected readonly X509Certificate2 _certificate;
+		protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
 
-    public class LoadCertificateException : Exception
-    {
-        public LoadCertificateException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-    }
+		public string Xml { get { return _xmlDoc.OuterXml; } }
 
-    public interface IResponse
-    {
-        void LoadXml(string xml);
-        void LoadXmlFromBase64(string saml_response);
-        string Audience { get; }
-        bool IsValid();
-        string GetNameID();
-        string GetDisplayName();
-        string GetEmail();
-        string GetFirstName();
-        string GetLastName();
-        string GetDepartment();
-        string GetPhone();
-        string GetCompany();
-        List<string> GetGroups();
-    }
+		public Response(string certificateStr, string responseString)
+			: this(StringToByteArray(certificateStr), responseString) { }
 
-    public class Response : IResponse
-    {
-        protected XmlDocument _xmlDoc;
-        private Certificate _certificate;
-        protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
+		public Response(byte[] certificateBytes, string responseString) : this(certificateBytes)
+		{
+			LoadXmlFromBase64(responseString);
+		}
 
-        public string Xml => _xmlDoc.OuterXml;
+		public Response(string certificateStr) : this(StringToByteArray(certificateStr)) { }
 
-        public Response(string certificateStr)
-        {
-            RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
+		public Response(byte[] certificateBytes)
+		{
+			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
 
-            _certificate = new Certificate();
-            _certificate.LoadCertificate(certificateStr);
-        }
+			try
+			{
+				_certificate = new X509Certificate2(certificateBytes);
+			} catch (Exception ex) 
+			{
+				throw new LoadCertificateException("Failed to load certificate", ex);
+			}
+		}
 
-        public void LoadXml(string xml)
-        {
-            _xmlDoc = new XmlDocument();
-            _xmlDoc.PreserveWhitespace = true;
-            _xmlDoc.XmlResolver = null;
-            _xmlDoc.LoadXml(xml);
+		public void LoadXml(string xml)
+		{
+			_xmlDoc = new XmlDocument();
+			_xmlDoc.PreserveWhitespace = true;
+			_xmlDoc.XmlResolver = null;
+			_xmlDoc.LoadXml(xml);
 
-            _xmlNameSpaceManager = GetNamespaceManager(); //lets construct a "manager" for XPath queries
-        }
+			_xmlNameSpaceManager = GetNamespaceManager(); //lets construct a "manager" for XPath queries
+		}
 
-        public void LoadXmlFromBase64(string response)
-        {
-            System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
-            LoadXml(enc.GetString(Convert.FromBase64String(response)));
-        }
+		public void LoadXmlFromBase64(string response)
+		{
+			UTF8Encoding enc = new UTF8Encoding();
+			LoadXml(enc.GetString(Convert.FromBase64String(response)));
+		}
 
-        /// <summary>Gets the intended audience of this request. This is intended for a multi-tennant IdP initiated request, where we don't yet know
-        /// which tennant in a multi tennanted system this request is for. Once we know we can then use that tennant's certificate to validate the
-        /// rest of the request. If an attacker sends a fake Audience value, it doesn't matter as long as you only trust it as far as choosing an appropriate
-        /// certificate from your data store and nothing else.</summary>
-        public string Audience
-        {
-            get
-            {
-                var nodeList = _xmlDoc.SelectNodes("//samlp:Response/saml:Assertion/saml:Conditions/saml:AudienceRestriction/saml:Audience", _xmlNameSpaceManager);
-                if (nodeList.Count > 0)
-                {
-                    return nodeList[0].InnerText;
-                }
-                return null;
-            }
-        }
+		/// <summary>Gets the intended audience of this request. This is intended for a multi-tennant IdP initiated request, where we don't yet know
+		/// which tennant in a multi tennanted system this request is for. Once we know we can then use that tennant's certificate to validate the
+		/// rest of the request. If an attacker sends a fake Audience value, it doesn't matter as long as you only trust it as far as choosing an appropriate
+		/// certificate from your data store and nothing else.</summary>
+		public string Audience
+		{
+			get
+			{
+				var nodeList = _xmlDoc.SelectNodes("//samlp:Response/saml:Assertion[1]/saml:Conditions/saml:AudienceRestriction/saml:Audience", _xmlNameSpaceManager);
+				if (nodeList.Count > 0)
+				{
+					return nodeList[0].InnerText;
+				}
+				return null;
+			}
+		}
 
-        public bool IsValid()
-        {
-            XmlNodeList nodeList;
+		public DateTime? GetSessionEndDate()
+		{
+			var auth_statement_node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:AuthnStatement", _xmlNameSpaceManager);
+			if (auth_statement_node != null && auth_statement_node.Attributes["SessionNotOnOrAfter"] != null)
+			{
+				if (DateTime.TryParse(auth_statement_node.Attributes["SessionNotOnOrAfter"].Value, out var  expirationDate))
+				{
+					return expirationDate;
+				}
+			}
+			return null;
+		}
 
-            // We don't want an exception to be thrown from this class.
-            try
-            {
-                nodeList = _xmlDoc.SelectNodes("//ds:Signature", _xmlNameSpaceManager);
-            } catch (Exception)
-            {
-                return false;
-            }
+		public bool IsValid()
+		{
+			XmlNodeList nodeList;
 
-            SignedXml signedXml = new SignedXml(_xmlDoc);
+			// We don't want an exception to be thrown from this class.
+			try
+			{
+				nodeList = _xmlDoc.SelectNodes("//ds:Signature", _xmlNameSpaceManager);
+			} catch (Exception)
+			{
+				return false;
+			}
+			
+			SignedXml signedXml = new SignedXml(_xmlDoc);
 
-            if (nodeList.Count == 0) return false;
+			if (nodeList.Count == 0) return false;
 
-            signedXml.LoadXml((XmlElement)nodeList[0]);
-            return ValidateSignatureReference(signedXml) && signedXml.CheckSignature(_certificate.cert, true) && !IsExpired();
-        }
+			signedXml.LoadXml((XmlElement)nodeList[0]);
+			return ValidateSignatureReference(signedXml) && signedXml.CheckSignature(_certificate, true) && !IsExpired();
+		}
 
-        //an XML signature can "cover" not the whole document, but only a part of it
-        //.NET's built in "CheckSignature" does not cover this case, it will validate to true.
-        //We should check the signature reference, so it "references" the id of the root document element! If not - it's a hack
-        private bool ValidateSignatureReference(SignedXml signedXml)
-        {
-            if (signedXml.SignedInfo.References.Count != 1) //no ref at all
-                return false;
+		//an XML signature can "cover" not the whole document, but only a part of it
+		//.NET's built in "CheckSignature" does not cover this case, it will validate to true.
+		//We should check the signature reference, so it "references" the id of the root document element! If not - it's a hack
+		private bool ValidateSignatureReference(SignedXml signedXml)
+		{
+			if (signedXml.SignedInfo.References.Count != 1) //no ref at all
+				return false;
 
-            var reference = (Reference)signedXml.SignedInfo.References[0];
-            var id = reference.Uri.Substring(1);
+			var reference = (Reference)signedXml.SignedInfo.References[0];
+			var id = reference.Uri.Substring(1);
 
-            var idElement = signedXml.GetIdElement(_xmlDoc, id);
+			var idElement = signedXml.GetIdElement(_xmlDoc, id);
 
-            if (idElement == _xmlDoc.DocumentElement)
-                return true;
-            else //sometimes its not the "root" doc-element that is being signed, but the "assertion" element
-            {
-                var assertionNode = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion", _xmlNameSpaceManager) as XmlElement;
-                if (assertionNode != idElement)
-                    return false;
-            }
+			if (idElement == _xmlDoc.DocumentElement)
+				return true;
+			else //sometimes its not the "root" doc-element that is being signed, but the "assertion" element
+			{
+				var assertionNode = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion", _xmlNameSpaceManager) as XmlElement;
+				if (assertionNode != idElement)
+					return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        private bool IsExpired()
-        {
-            DateTime expirationDate = DateTime.MaxValue;
-            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData", _xmlNameSpaceManager);
-            if (node != null && node.Attributes["NotOnOrAfter"] != null)
-            {
-                DateTime.TryParse(node.Attributes["NotOnOrAfter"].Value, out expirationDate);
-            }
-            return DateTime.UtcNow > expirationDate.ToUniversalTime();
-        }
+		private bool IsExpired()
+		{
+			DateTime expirationDate = DateTime.MaxValue;
+			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData", _xmlNameSpaceManager);
+			if (node != null && node.Attributes["NotOnOrAfter"] != null)
+			{
+				DateTime.TryParse(node.Attributes["NotOnOrAfter"].Value, out expirationDate);
+			}
+			return DateTime.UtcNow > expirationDate.ToUniversalTime();
+		}
 
-        public string GetNameID()
-        {
-            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", _xmlNameSpaceManager);
-            return node.InnerText;
-        }
+		public string GetNameID()
+		{
+			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:NameID", _xmlNameSpaceManager);
+			return node.InnerText;
+		}
 
-        private string AssertionAttributeValueForWithCoalesce(params string[] names_to_try)
-        {
-            foreach (string name in names_to_try.Union(names_to_try.Select(name => $"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/{name}")))
-            {
-                var attempt = AssertionAttributeValueFor(name)?.InnerText;
-                if (attempt != null)
-                    return attempt;
-            }
-            return null;
-        }
+		public string GetUpn()
+		{
+			return AssertionAttributeValueForWithCoalesce("upn");
+		}
 
-        private XmlNode AssertionAttributeValueFor(string name) => _xmlDoc.SelectSingleNode($"/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='{name}']/saml:AttributeValue", _xmlNameSpaceManager);
+		public string GetDisplayName()
+		{
+			return AssertionAttributeValueForWithCoalesce("displayname", "dname");
+		}
 
-        // Each of these methods will try different attributes to ensure compatiability across Microsoft AD and other IdPs.
+		public string GetEmail()
+		{
+			return AssertionAttributeValueForWithCoalesce("User.email", "emailaddress", "mail");
+		}
 
-        public string GetDisplayName() => AssertionAttributeValueForWithCoalesce("displayname", "dname");
+		public string GetFirstName()
+		{
+			return AssertionAttributeValueForWithCoalesce("first_name", "givenname", "User.FirstName");
+		}
 
-        public string GetEmail() => AssertionAttributeValueForWithCoalesce("User.email", "emailaddress");
+		public string GetLastName()
+		{
+			return AssertionAttributeValueForWithCoalesce("last_name", "surname", "User.LastName", "sn");
+		}
 
-        public string GetFirstName() => AssertionAttributeValueForWithCoalesce("first_name", "givenname", "User.FirstName");
+		public string GetDepartment()
+		{
+			return AssertionAttributeValueForWithCoalesce("department", "Department");
+		}
 
-        public string GetLastName() => AssertionAttributeValueForWithCoalesce("last_name", "surname", "User.LastName");
+		public string GetPhone()
+		{
+			return AssertionAttributeValueForWithCoalesce("homephone", "telephonenumber", "Phone number");
+		}
 
-        public string GetDepartment() => AssertionAttributeValueForWithCoalesce("department", "Department");
+		public string GetCompany()
+		{
+			return AssertionAttributeValueForWithCoalesce("companyname", "Company", "User.CompanyName");
+		}
 
-        public string GetPhone() => AssertionAttributeValueForWithCoalesce("homephone", "telephonenumber", "Phone number");
+		public List<string> GetGroups()
+		{
+			// this is only valid for azure claims.
+			var node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
+			var group_ids = new List<string>();
+			foreach (XmlNode node in node_list)
+			{
+				group_ids.Add(node.InnerText);
+			}
+			return group_ids;
+		}
 
-        public string GetCompany() => AssertionAttributeValueForWithCoalesce("companyname", "Company", "User.CompanyName");
+		private string AssertionAttributeValueForWithCoalesce(params string[] names_to_try)
+		{
+			foreach (string name in names_to_try.Union(names_to_try.Select(name => $"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/{name}")))
+			{
+				var attempt = GetCustomAttribute(name);
+				if (attempt != null)
+					return attempt;
+			}
+			return null;
+		}
 
-        public List<string> GetGroups()
-        {
-            // this is only valid for azure claims.
-            var node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
-            var group_ids = new List<string>();
-            foreach (XmlNode node in node_list)
-            {
-                group_ids.Add(node.InnerText);
-            }
-            return group_ids;
-        }
+		public string GetCustomAttribute(string attr)
+		{
+			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='" + attr + "']/saml:AttributeValue", _xmlNameSpaceManager);
+			return node == null ? null : node.InnerText;
+		}
 
-        //returns namespace manager, we need one b/c MS says so... Otherwise XPath doesnt work in an XML doc with namespaces
-        //see https://stackoverflow.com/questions/7178111/why-is-xmlnamespacemanager-necessary
-        private XmlNamespaceManager GetNamespaceManager()
-        {
-            XmlNamespaceManager manager = new XmlNamespaceManager(_xmlDoc.NameTable);
-            manager.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
-            manager.AddNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-            manager.AddNamespace("samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+		//returns namespace manager, we need one b/c MS says so... Otherwise XPath doesnt work in an XML doc with namespaces
+		//see https://stackoverflow.com/questions/7178111/why-is-xmlnamespacemanager-necessary
+		private XmlNamespaceManager GetNamespaceManager()
+		{
+			XmlNamespaceManager manager = new XmlNamespaceManager(_xmlDoc.NameTable);
+			manager.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
+			manager.AddNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+			manager.AddNamespace("samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
 
-            return manager;
-        }
-    }
+			return manager;
+		}
+	}
 
-    public class AuthRequest
-    {
-        public string _id;
-        private string _issue_instant;
+	public class AuthRequest
+	{
+		public string _id;
+		private string _issue_instant;
 
-        private string _issuer;
-        private string _assertionConsumerServiceUrl;
+		private string _issuer;
+		private string _assertionConsumerServiceUrl;
 
-        public enum AuthRequestFormat
-        {
-            Base64 = 1
-        }
+		public enum AuthRequestFormat
+		{
+			Base64 = 1
+		}
 
-        public AuthRequest(string issuer, string assertionConsumerServiceUrl)
-        {
-            RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
+		public AuthRequest(string issuer, string assertionConsumerServiceUrl)
+		{
+			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
 
-            if (issuer == null || assertionConsumerServiceUrl == null)
-                throw new NullReferenceException();
+			if (issuer == null || assertionConsumerServiceUrl == null)
+				throw new NullReferenceException();
 
-            _id = "_" + System.Guid.NewGuid().ToString();
-            _issue_instant = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+			_id = "_" + Guid.NewGuid().ToString();
+			_issue_instant = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
 
-            _issuer = issuer;
-            _assertionConsumerServiceUrl = assertionConsumerServiceUrl;
-        }
+			_issuer = issuer;
+			_assertionConsumerServiceUrl = assertionConsumerServiceUrl;
+		}
 
-        public string GetRequest(AuthRequestFormat format)
-        {
-            using (StringWriter sw = new StringWriter())
-            {
-                XmlWriterSettings xws = new XmlWriterSettings();
-                xws.OmitXmlDeclaration = true;
+		public string GetRequest(AuthRequestFormat format)
+		{
+			using (StringWriter sw = new StringWriter())
+			{
+				XmlWriterSettings xws = new XmlWriterSettings();
+				xws.OmitXmlDeclaration = true;
 
-                using (XmlWriter xw = XmlWriter.Create(sw, xws))
-                {
-                    xw.WriteStartElement("samlp", "AuthnRequest", "urn:oasis:names:tc:SAML:2.0:protocol");
-                    xw.WriteAttributeString("ID", _id);
-                    xw.WriteAttributeString("Version", "2.0");
-                    xw.WriteAttributeString("IssueInstant", _issue_instant);
-                    xw.WriteAttributeString("ProtocolBinding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
-                    xw.WriteAttributeString("AssertionConsumerServiceURL", _assertionConsumerServiceUrl);
+				using (XmlWriter xw = XmlWriter.Create(sw, xws))
+				{
+					xw.WriteStartElement("samlp", "AuthnRequest", "urn:oasis:names:tc:SAML:2.0:protocol");
+					xw.WriteAttributeString("ID", _id);
+					xw.WriteAttributeString("Version", "2.0");
+					xw.WriteAttributeString("IssueInstant", _issue_instant);
+					xw.WriteAttributeString("ProtocolBinding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
+					xw.WriteAttributeString("AssertionConsumerServiceURL", _assertionConsumerServiceUrl);
 
-                    xw.WriteStartElement("saml", "Issuer", "urn:oasis:names:tc:SAML:2.0:assertion");
-                    xw.WriteString(_issuer);
-                    xw.WriteEndElement();
+					xw.WriteStartElement("saml", "Issuer", "urn:oasis:names:tc:SAML:2.0:assertion");
+					xw.WriteString(_issuer);
+					xw.WriteEndElement();
 
-                    xw.WriteStartElement("samlp", "NameIDPolicy", "urn:oasis:names:tc:SAML:2.0:protocol");
-                    xw.WriteAttributeString("Format", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
-                    xw.WriteAttributeString("AllowCreate", "true");
-                    xw.WriteEndElement();
+					xw.WriteStartElement("samlp", "NameIDPolicy", "urn:oasis:names:tc:SAML:2.0:protocol");
+					xw.WriteAttributeString("Format", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified");
+					xw.WriteAttributeString("AllowCreate", "true");
+					xw.WriteEndElement();
 
-                    /*xw.WriteStartElement("samlp", "RequestedAuthnContext", "urn:oasis:names:tc:SAML:2.0:protocol");
-                    xw.WriteAttributeString("Comparison", "exact");
-                    xw.WriteStartElement("saml", "AuthnContextClassRef", "urn:oasis:names:tc:SAML:2.0:assertion");
-                    xw.WriteString("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
-                    xw.WriteEndElement();
-                    xw.WriteEndElement();*/
+					/*xw.WriteStartElement("samlp", "RequestedAuthnContext", "urn:oasis:names:tc:SAML:2.0:protocol");
+					xw.WriteAttributeString("Comparison", "exact");
+					xw.WriteStartElement("saml", "AuthnContextClassRef", "urn:oasis:names:tc:SAML:2.0:assertion");
+					xw.WriteString("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
+					xw.WriteEndElement();
+					xw.WriteEndElement();*/
 
-                    xw.WriteEndElement();
-                }
+					xw.WriteEndElement();
+				}
 
-                if (format == AuthRequestFormat.Base64)
-                {
-                    //byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(sw.ToString());
-                    //return System.Convert.ToBase64String(toEncodeAsBytes);
+				if (format == AuthRequestFormat.Base64)
+				{
+					//byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(sw.ToString());
+					//return System.Convert.ToBase64String(toEncodeAsBytes);
 
-                    //https://stackoverflow.com/questions/25120025/acs75005-the-request-is-not-a-valid-saml2-protocol-message-is-showing-always%3C/a%3E
-                    var memoryStream = new MemoryStream();
-                    var writer = new StreamWriter(new DeflateStream(memoryStream, CompressionMode.Compress, true), new UTF8Encoding(false));
-                    writer.Write(sw.ToString());
-                    writer.Close();
-                    string result = Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length, Base64FormattingOptions.None);
-                    return result;
-                }
+					//https://stackoverflow.com/questions/25120025/acs75005-the-request-is-not-a-valid-saml2-protocol-message-is-showing-always%3C/a%3E
+					var memoryStream = new MemoryStream();
+					var writer = new StreamWriter(new DeflateStream(memoryStream, CompressionMode.Compress, true), new UTF8Encoding(false));
+					writer.Write(sw.ToString());
+					writer.Close();
+					string result = Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length, Base64FormattingOptions.None);
+					return result;
+				}
 
-                return null;
-            }
-        }
+				return null;
+			}
+		}
 
-        //returns the URL you should redirect your users to (i.e. your SAML-provider login URL with the Base64-ed request in the querystring
-        public string GetRedirectUrl(string samlEndpoint)
-        {
-            var queryStringSeparator = samlEndpoint.Contains("?") ? "&" : "?";
+		//returns the URL you should redirect your users to (i.e. your SAML-provider login URL with the Base64-ed request in the querystring
+		public string GetRedirectUrl(string samlEndpoint, string relayState = null)
+		{
+			var queryStringSeparator = samlEndpoint.Contains("?") ? "&" : "?";
 
-            return samlEndpoint + queryStringSeparator + "SAMLRequest=" + HttpUtility.UrlEncode(this.GetRequest(AuthRequest.AuthRequestFormat.Base64));
-        }
-    }
+			var url = samlEndpoint + queryStringSeparator + "SAMLRequest=" + HttpUtility.UrlEncode(GetRequest(AuthRequestFormat.Base64));
+
+			if (!string.IsNullOrEmpty(relayState)) 
+			{
+				url += "&RelayState=" + HttpUtility.UrlEncode(relayState);
+			}
+
+			return url;
+		}
+	}
 }
