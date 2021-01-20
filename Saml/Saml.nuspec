@@ -9,7 +9,7 @@
     <authors>displayr.com_martincapodici</authors>
     <projectUrl>https://github.com/Displayr/AspNetSaml</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Displayr/AspNetSaml/master/nuget-icon.png</iconUrl>
-    <license type="expression">MIT</license>
+    <license type="expression">Apache-2.0</license>
     <copyright>displayr.com</copyright>
     <tags>SAML IdP</tags>
     <releaseNotes></releaseNotes>
