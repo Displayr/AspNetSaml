@@ -119,11 +119,12 @@ This will add a reference to a compiled version of this assembly.
 
 nuget pack Saml\Saml.nuspec
 
-7. This will generate a file like Displayr.AspNetSaml.1.1.0.nupkg in your solution root folder.
-8. Visit https://www.nuget.org/packages/Displayr.AspNetSaml/ and login, and click upload.
-9. Upload the nupkg file generated.
-10. In the preview, enter https://raw.githubusercontent.com/Displayr/AspNetSaml/master/README.md for the doco url.
-11. Click Submit
+7. Ignore warnings about using bin folders.
+8. This will generate a file like Displayr.AspNetSaml.1.1.0.nupkg in your solution root folder.
+9. Visit https://www.nuget.org/packages/Displayr.AspNetSaml/ and login, and click upload.
+10. Upload the nupkg file generated.
+11. In the preview, enter https://raw.githubusercontent.com/Displayr/AspNetSaml/master/README.md for the doco url.
+12. Click Submit
 
 # About Displayr
 
