@@ -111,7 +111,7 @@ This will add a reference to a compiled version of this assembly.
 # Nuget Publishing Steps
 
 1. Open the solution in Visual Studio
-2. Do both a debug build
+2. Do a release build
 3. Copy the build output Saml.dll to the lib folder.
 4. Update Saml.Nuspec version number, and please use the SEMVER (https://semver.org/) scheme to decide which digit to increment. Commit this and push.
 5. Update Saml.Nuspec releasenotes fields and put some description of what you changed there. But don't commit this.
