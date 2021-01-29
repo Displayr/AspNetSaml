@@ -3,7 +3,7 @@
   <metadata>
     <id>Displayr.AspNetSaml</id>
     <title>Saml library for Service Providers written in .NET</title>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <description>This package allows your web application or SAML service provider to integrate with a third party SAML Identity Provider (e.g. Microsoft Azure AD). Displayr.AspNetSaml is a fork of https://www.nuget.org/packages/AspNetSaml that includes some changes that the https://www.displayr.com engineering team required for their SAML integration.</description>
     <summary>Integrate your application with a SAML Identity Provider.</summary>
     <authors>displayr.com_martincapodici</authors>

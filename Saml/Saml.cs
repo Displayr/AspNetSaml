@@ -85,6 +85,7 @@ namespace Saml
 		string GetPhone();
 		string GetCompany();
 		List<string> GetGroups();
+		DateTime? GetSessionEndDate();
 	}
 
 	public partial class Response : IResponse
