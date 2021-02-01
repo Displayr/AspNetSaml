@@ -14,17 +14,16 @@ namespace Saml.Integration
         public const string USERNAME = "intern1@DISPLAYRSAMLTEST.onmicrosoft.com";
         public const string PASSWORD = "Testmyapp6";
 
-        public const string REPLY_URL = @"https://saml-test55.azurewebsites.net/api/HttpTrigger1?code=EnzGd2u543rsIDiR1vaRHQNmbhmSdUZhN5xW2VoA5atqssI5fjhq9w==";
-
-        public const string APP_ID = "2cb753ec-8174-4f4d-8bb2-a3a50de9cd29";
+        // Azure Active Directory > Saml Single Signon Test Organisation
+        // GUID here is our Active Directory (see above) tenant ID.
         public const string SAML_ENDPOINT = @"https://login.microsoftonline.com/86c4efd3-7f59-4e51-8f64-6d7848dfcaef/saml2";
         public const string SIGNOUT_URL = "https://login.microsoftonline.com/common/wsfederation?wa=wsignout1.0";
 
-        public const string XML_CONTENTS_SELECTOR = "body > pre";
-
-        public const string RETURN_INNER_TEXT_FUNC = "(element) => { return element.innerText; }";
-
-        // Azure's certificate 
+        // ... > Enterprise Applications > Displayr (saml-test-master)
+        public const string APP_ID = "2cb753ec-8174-4f4d-8bb2-a3a50de9cd29";
+        // ... > Single signon on > Basic SAML Configuration.
+        public const string REPLY_URL = @"https://displayr-functions-csharp.azurewebsites.net/api/SamlTestIdentityProviderResponse?code=lLl0kDBzXIz84eiJJKRtq7N4fD35b0nd24R95HJqLq5X5bgfCkhcVg==";
+        // ... > SAML Signing Certificate
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
 MIIC8DCCAdigAwIBAgIQaBn3qbDVJ7ZDYJ1vNoM2mzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
 EylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMDEyMTcyMzU4
@@ -41,6 +40,10 @@ izr81KNsVYSbXmk2GpA3/YWrfFYQBSGzyf1dwYrr2Kq1WWP2gyKLfc84LsHcz0/RivMdedWn91Va
 0KSXA3g/tcxt/mmw0VRzAQsRnbulE3k4F3jKsm5saZCGZfi60OwGbJokZZ6Wx1gzuvAKyIjdYVr0
 y3eWF9z8XhuBKGWyZ7n0
 -----END CERTIFICATE-----";
+
+        public const string XML_CONTENTS_SELECTOR = "body > pre";
+
+        public const string RETURN_INNER_TEXT_FUNC = "(element) => { return element.innerText; }";
 
         /// <summary> This function takes in the name of a HTML element and returns a javascript function 
         /// that can find the corresponding ID of the element. The javascript function is returned as a string.
