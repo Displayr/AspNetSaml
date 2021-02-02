@@ -100,6 +100,14 @@ if (samlResponse.IsValid())
 Depending on your .NET version, your Project should reference `System.Security` 
 for .NET Framework and `System.Security.Cryptography.Xml` for .NET Core.
 
+# Testing
+Tests are Visual Studio tests.  Build the solution and you should find them in the Test Explorer.
+These rely on:
+
+* The test Azure Active Directory called "Saml Single Signon Test Organisation"
+* In which the "Displayr (saml-test-master)" Enterprise Application is registered, including a reference to the redirection URL (below).
+* An Azure function that serves the redirection URL.  (Constants.cs:REPLY_URL)
+
 # Nuget
 
 I've published this to Nuget.
