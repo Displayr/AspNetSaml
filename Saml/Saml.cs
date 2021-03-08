@@ -255,12 +255,12 @@ namespace Saml
 
 		public string GetFirstName()
 		{
-			return AssertionAttributeValueForWithCoalesce("first_name", "givenname", "User.FirstName");
+			return AssertionAttributeValueForWithCoalesce("first_name", "givenname", "User.FirstName", "FirstName");
 		}
 
 		public string GetLastName()
 		{
-			return AssertionAttributeValueForWithCoalesce("last_name", "surname", "User.LastName", "sn");
+			return AssertionAttributeValueForWithCoalesce("last_name", "surname", "User.LastName", "sn", "LastName");
 		}
 
 		public string GetDepartment()
