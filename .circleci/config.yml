@@ -14,8 +14,10 @@ jobs:
             msbuild "Saml.sln" /p:Configuration=Release -t:restore,build -p:RestorePackagesConfig=true
       - run:
           name: MSTest
+          environment:
+            VSTEST: 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/Extensions/TestPlatform/vstest.console.exe'
           command: |
-            mstest "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
+            & $env:VSTEST "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
 
 workflows:
   build_and_test:
