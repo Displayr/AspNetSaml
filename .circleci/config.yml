@@ -1,0 +1,21 @@
+version: 2.1
+
+orbs:
+  win: circleci/windows@4.1.1
+
+jobs:
+  build:
+    executor: win/server-2022
+    steps:
+      - checkout
+      - run:
+          name: MSbuild
+          environment:
+          command: |
+            msbuild "Saml.sln" /p:Configuration=Debug
+            if ($LastExitCode -ne 0) { $lastexitcode; throw "Build Debug Error" }
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
