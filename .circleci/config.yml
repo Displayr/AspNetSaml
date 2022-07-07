@@ -4,18 +4,21 @@ orbs:
   win: circleci/windows@4.1.1
 
 jobs:
-  build:
+  build_and_test:
     executor: win/server-2019
     steps:
       - checkout
       - run:
           name: MSBuild
-          environment:
           command: |
             msbuild "Saml.sln" /p:Configuration=Release -t:restore,build -p:RestorePackagesConfig=true
             if ($LastExitCode -ne 0) { $lastexitcode; throw "Build Error" }
+      - run:
+          name: VSTest
+          command: |
+            vstest "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
 
 workflows:
   build_and_test:
     jobs:
-      - build
+      - build_and_test
