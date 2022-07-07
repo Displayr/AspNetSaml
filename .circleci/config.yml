@@ -5,6 +5,10 @@ orbs:
 
 jobs:
   build_and_test:
+    filters:
+      branches:
+        only:
+          - master
     executor: win/server-2019
     steps:
       - checkout
@@ -17,8 +21,10 @@ jobs:
           environment:
             VSTEST: 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/Extensions/TestPlatform/vstest.console.exe'
           command: |
-            & $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
+            & $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll" /Logger:trx /ResultsDirectory:UnitTestResults
             # "Saml.Integration\bin\Release\Saml.Integration.dll"  Integration Tests are broken becuase SAML login page has changed. The account does not exist either.
+      - store_test_results:
+          path: UnitTestResults
 
 workflows:
   build_and_test:
