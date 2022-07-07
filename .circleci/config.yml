@@ -17,8 +17,13 @@ jobs:
           environment:
             VSTEST: 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/Extensions/TestPlatform/vstest.console.exe'
           command: |
-            & $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll" /Logger:trx /ResultsDirectory:UnitTestResults
-            # "Saml.Integration\bin\Release\Saml.Integration.dll"  Integration Tests are broken becuase SAML login page has changed. The account does not exist either.
+            dotnet tool install -g trx2junit
+            [Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Users\circleci\.dotnet\tools", [System.EnvironmentVariableTarget]::User)
+            $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll" /Logger:trx /ResultsDirectory:UnitTestResults
+            # Skip integration tests. they are broken becuase SAML login page has changed. The login account does not exist either. Saml.Integration\bin\Debug\Saml.Integration.dll"
+            
+            # Converet test results
+            trx2junit UnitTestResults/*.trx
       - store_test_results:
           path: UnitTestResults
 
