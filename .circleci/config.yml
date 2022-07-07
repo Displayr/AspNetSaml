@@ -12,8 +12,8 @@ jobs:
           name: MSbuild
           environment:
           command: |
-            msbuild "Saml.sln" /p:Configuration=Debug
-            if ($LastExitCode -ne 0) { $lastexitcode; throw "Build Debug Error" }
+            msbuild "Saml.sln" /p:Configuration=Release -t:restore,build -p:RestorePackagesConfig=true
+            if ($LastExitCode -ne 0) { $lastexitcode; throw "Build Error" }
 
 workflows:
   build_and_test:
