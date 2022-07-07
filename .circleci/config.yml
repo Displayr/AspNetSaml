@@ -12,11 +12,10 @@ jobs:
           name: MSBuild
           command: |
             msbuild "Saml.sln" /p:Configuration=Release -t:restore,build -p:RestorePackagesConfig=true
-            if ($LastExitCode -ne 0) { $lastexitcode; throw "Build Error" }
       - run:
-          name: VSTest
+          name: MSTest
           command: |
-            vstest.console "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
+            mstest "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
 
 workflows:
   build_and_test:
