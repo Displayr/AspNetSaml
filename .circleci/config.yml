@@ -17,7 +17,8 @@ jobs:
           environment:
             VSTEST: 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/Extensions/TestPlatform/vstest.console.exe'
           command: |
-            & $env:VSTEST "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
+            & $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
+            # "Saml.Integration\bin\Release\Saml.Integration.dll"  Integration Tests are broken becuase SAML login page has changed. The account does not exist either.
 
 workflows:
   build_and_test:
