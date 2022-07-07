@@ -16,7 +16,7 @@ jobs:
       - run:
           name: VSTest
           command: |
-            vstest "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
+            vstest.console "Saml.Integration\bin\Release\Saml.Integration.dll" "saml.Test\saml.Test\bin\Release\Saml.Test.dll"
 
 workflows:
   build_and_test:
