@@ -19,7 +19,7 @@ jobs:
           command: |
             dotnet tool install -g trx2junit
             [Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Users\circleci\.dotnet\tools", [System.EnvironmentVariableTarget]::User)
-            $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll" /Logger:trx /ResultsDirectory:UnitTestResults
+            & $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll" /Logger:trx /ResultsDirectory:UnitTestResults
             # Skip integration tests. they are broken becuase SAML login page has changed. The login account does not exist either. Saml.Integration\bin\Debug\Saml.Integration.dll"
             
             # Converet test results
