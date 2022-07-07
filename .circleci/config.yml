@@ -5,10 +5,6 @@ orbs:
 
 jobs:
   build_and_test:
-    filters:
-      branches:
-        only:
-          - master
     executor: win/server-2019
     steps:
       - checkout
@@ -30,3 +26,7 @@ workflows:
   build_and_test:
     jobs:
       - build_and_test
+        filters:
+          branches:
+            only:
+              - master
