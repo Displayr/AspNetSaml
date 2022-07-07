@@ -30,7 +30,6 @@ jobs:
 workflows:
   build_and_test:
     when:
-      not:
-        matches: { pattern: "master", value: << pipeline.git.branch >> }  
+      matches: { pattern: "master", value: << pipeline.git.branch >> }  
     jobs:
       - build_and_test
