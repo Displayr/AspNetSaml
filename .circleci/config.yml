@@ -12,6 +12,7 @@ jobs:
           name: MSbuild
           environment:
           command: |
+            choco install dotnet4.0 -y
             msbuild "Saml.sln" /p:Configuration=Release -t:restore,build -p:RestorePackagesConfig=true
             if ($LastExitCode -ne 0) { $lastexitcode; throw "Build Error" }
 
