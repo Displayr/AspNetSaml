@@ -9,9 +9,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: MSBuild Nuget Restore
+          command: |
+            msbuild "Saml.sln" -t:restore -p:RestorePackagesConfig=true      
+      - run:
           name: MSBuild
           command: |
-            msbuild "Saml.sln" /p:Configuration=Release -t:restore,build -p:RestorePackagesConfig=true
+            msbuild "Saml.sln" /p:Configuration=Release -t:build
       - run:
           name: MSTest
           environment:
