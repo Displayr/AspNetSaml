@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  win: circleci/windows@4.1.1
+
+jobs:
+  build_and_test:
+    executor: win/server-2019
+    steps:
+      - checkout
+      - run:
+          name: MSBuild Nuget Restore
+          command: |
+            msbuild "Saml.sln" -t:restore -p:RestorePackagesConfig=true      
+      - run:
+          name: MSBuild
+          command: |
+            msbuild "Saml.sln" /p:Configuration=Release -t:build
+      - run:
+          name: MSTest
+          environment:
+            VSTEST: 'C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/Extensions/TestPlatform/vstest.console.exe'
+            Trx2junit: 'C:\Users\circleci\.dotnet\tools\trx2junit'
+          command: |
+            dotnet tool install -g trx2junit
+            & $env:VSTEST "saml.Test\saml.Test\bin\Release\Saml.Test.dll" /Logger:trx /ResultsDirectory:UnitTestResults
+            # Skip integration tests. they are broken becuase SAML login page has changed. The login account does not exist either. Saml.Integration\bin\Debug\Saml.Integration.dll"
+            
+            # Converet test results
+            & $env:Trx2junit UnitTestResults/*.trx
+      - store_test_results:
+          path: UnitTestResults
+
+workflows:
+  build_and_test:
+    when:
+      matches: { pattern: "master", value: << pipeline.git.branch >> }  
+    jobs:
+      - build_and_test
