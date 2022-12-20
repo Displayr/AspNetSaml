@@ -235,7 +235,7 @@ namespace Saml
 		public string GetNameID()
 		{
 			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:NameID", _xmlNameSpaceManager);
-			return node.InnerText;
+			return node?.InnerText;
 		}
 
 		public string GetUpn()
