@@ -76,6 +76,8 @@ namespace Saml
 		void LoadXmlFromBase64(string saml_response);
 		string Audience { get; }
 		bool IsValid();
+		string GetID();
+		DateTime GetValidUntilUtc();
 		string GetNameID();
 		string GetDisplayName();
 		string GetEmail();
@@ -93,8 +95,7 @@ namespace Saml
 		private static byte[] StringToByteArray(string st)
 		{
 			byte[] bytes = new byte[st.Length];
-			for (int i = 0; i < st.Length; i++)
-			{
+			for (int i = 0; i < st.Length; i++) {
 				bytes[i] = (byte)st[i];
 			}
 			return bytes;
@@ -120,11 +121,9 @@ namespace Saml
 		{
 			RSAPKCS1SHA256SignatureDescription.Init(); //init the SHA256 crypto provider (for needed for .NET 4.0 and lower)
 
-			try
-			{
+			try {
 				_certificate = new X509Certificate2(certificateBytes);
-			} catch (Exception ex) 
-			{
+			} catch (Exception ex) {
 				throw new LoadCertificateException("Failed to load certificate", ex);
 			}
 		}
@@ -154,8 +153,7 @@ namespace Saml
 			get
 			{
 				var nodeList = _xmlDoc.SelectNodes("//samlp:Response/saml:Assertion[1]/saml:Conditions/saml:AudienceRestriction/saml:Audience", _xmlNameSpaceManager);
-				if (nodeList.Count > 0)
-				{
+				if (nodeList.Count > 0) {
 					return nodeList[0].InnerText;
 				}
 				return null;
@@ -165,10 +163,8 @@ namespace Saml
 		public DateTime? GetSessionEndDate()
 		{
 			var auth_statement_node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:AuthnStatement", _xmlNameSpaceManager);
-			if (auth_statement_node != null && auth_statement_node.Attributes["SessionNotOnOrAfter"] != null)
-			{
-				if (DateTime.TryParse(auth_statement_node.Attributes["SessionNotOnOrAfter"].Value, out var  expirationDate))
-				{
+			if (auth_statement_node != null && auth_statement_node.Attributes["SessionNotOnOrAfter"] != null) {
+				if (DateTime.TryParse(auth_statement_node.Attributes["SessionNotOnOrAfter"].Value, out var expirationDate)) {
 					return expirationDate;
 				}
 			}
@@ -180,14 +176,12 @@ namespace Saml
 			XmlNodeList nodeList;
 
 			// We don't want an exception to be thrown from this class.
-			try
-			{
+			try {
 				nodeList = _xmlDoc.SelectNodes("//ds:Signature", _xmlNameSpaceManager);
-			} catch (Exception)
-			{
+			} catch (Exception) {
 				return false;
 			}
-			
+
 			SignedXml signedXml = new SignedXml(_xmlDoc);
 
 			if (nodeList.Count == 0) return false;
@@ -223,13 +217,26 @@ namespace Saml
 
 		private bool IsExpired()
 		{
+			return DateTime.UtcNow > GetValidUntilUtc();
+		}
+
+		/// <summary>The datetime from which the assertion is no longer valid.</summary>
+		/// <remarks>Comes from NotOnOrAfter in the SubjectConfirmationData</remarks>
+		public DateTime GetValidUntilUtc()
+		{
 			DateTime expirationDate = DateTime.MaxValue;
 			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData", _xmlNameSpaceManager);
-			if (node != null && node.Attributes["NotOnOrAfter"] != null)
-			{
+			if (node != null && node.Attributes["NotOnOrAfter"] != null) {
 				DateTime.TryParse(node.Attributes["NotOnOrAfter"].Value, out expirationDate);
 			}
-			return DateTime.UtcNow > expirationDate.ToUniversalTime();
+			return expirationDate.ToUniversalTime();
+		}
+
+		/// <summary>The Assertion ID</summary>
+		public string GetID()
+		{
+			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]", _xmlNameSpaceManager);
+			return node.Attributes["ID"].InnerText;
 		}
 
 		public string GetNameID()
@@ -283,8 +290,7 @@ namespace Saml
 			// this is only valid for azure claims.
 			var node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
 			var group_ids = new List<string>();
-			foreach (XmlNode node in node_list)
-			{
+			foreach (XmlNode node in node_list) {
 				group_ids.Add(node.InnerText);
 			}
 			return group_ids;
@@ -292,8 +298,7 @@ namespace Saml
 
 		private string AssertionAttributeValueForWithCoalesce(params string[] names_to_try)
 		{
-			foreach (string name in names_to_try.Union(names_to_try.Select(name => $"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/{name}")))
-			{
+			foreach (string name in names_to_try.Union(names_to_try.Select(name => $"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/{name}"))) {
 				var attempt = GetCustomAttribute(name);
 				if (attempt != null)
 					return attempt;
@@ -349,13 +354,11 @@ namespace Saml
 
 		public string GetRequest(AuthRequestFormat format)
 		{
-			using (StringWriter sw = new StringWriter())
-			{
+			using (StringWriter sw = new StringWriter()) {
 				XmlWriterSettings xws = new XmlWriterSettings();
 				xws.OmitXmlDeclaration = true;
 
-				using (XmlWriter xw = XmlWriter.Create(sw, xws))
-				{
+				using (XmlWriter xw = XmlWriter.Create(sw, xws)) {
 					xw.WriteStartElement("samlp", "AuthnRequest", "urn:oasis:names:tc:SAML:2.0:protocol");
 					xw.WriteAttributeString("ID", _id);
 					xw.WriteAttributeString("Version", "2.0");
@@ -382,8 +385,7 @@ namespace Saml
 					xw.WriteEndElement();
 				}
 
-				if (format == AuthRequestFormat.Base64)
-				{
+				if (format == AuthRequestFormat.Base64) {
 					//byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(sw.ToString());
 					//return System.Convert.ToBase64String(toEncodeAsBytes);
 
@@ -407,8 +409,7 @@ namespace Saml
 
 			var url = samlEndpoint + queryStringSeparator + "SAMLRequest=" + HttpUtility.UrlEncode(GetRequest(AuthRequestFormat.Base64));
 
-			if (!string.IsNullOrEmpty(relayState)) 
-			{
+			if (!string.IsNullOrEmpty(relayState)) {
 				url += "&RelayState=" + HttpUtility.UrlEncode(relayState);
 			}
 
