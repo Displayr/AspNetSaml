@@ -240,7 +240,7 @@ namespace Saml
 			return expirationDate.ToUniversalTime();
         }
 
-		/// <summary>The Assertion ID</summary>
+        /// <summary>The Assertion ID</summary>
         public string GetID()
         {
             XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]", _xmlNameSpaceManager);
