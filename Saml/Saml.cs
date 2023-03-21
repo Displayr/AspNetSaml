@@ -76,7 +76,9 @@ namespace Saml
 		void LoadXmlFromBase64(string saml_response);
 		string Audience { get; }
 		bool IsValid();
-		string GetNameID();
+		string GetID();
+		DateTime GetValidUntilUtc();
+        string GetNameID();
 		string GetDisplayName();
 		string GetEmail();
 		string GetFirstName();
@@ -223,16 +225,29 @@ namespace Saml
 
 		private bool IsExpired()
 		{
-			DateTime expirationDate = DateTime.MaxValue;
-			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData", _xmlNameSpaceManager);
-			if (node != null && node.Attributes["NotOnOrAfter"] != null)
-			{
-				DateTime.TryParse(node.Attributes["NotOnOrAfter"].Value, out expirationDate);
-			}
-			return DateTime.UtcNow > expirationDate.ToUniversalTime();
-		}
+			return DateTime.UtcNow > GetValidUntilUtc();
+        }
 
-		public string GetNameID()
+        /// <summary>The datetime from which the assertion is no longer valid.</summary>
+        /// <remarks>Comes from NotOnOrAfter in the SubjectConfirmationData</remarks>
+        public DateTime GetValidUntilUtc()
+        {
+            DateTime expirationDate = DateTime.MaxValue;
+            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData", _xmlNameSpaceManager);
+            if (node != null && node.Attributes["NotOnOrAfter"] != null) {
+                DateTime.TryParse(node.Attributes["	"].Value, out expirationDate);
+            }
+			return expirationDate.ToUniversalTime();
+        }
+
+		/// <summary>The Assertion ID</summary>
+        public string GetID()
+        {
+            XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]", _xmlNameSpaceManager);
+			return node.Attributes["ID"].InnerText;
+        }
+
+        public string GetNameID()
 		{
 			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:Subject/saml:NameID", _xmlNameSpaceManager);
 			return node?.InnerText;

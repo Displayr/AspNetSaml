@@ -8,7 +8,11 @@ It's a *SAML client* library, not a *SAML server*, allows adding SAML single-sig
 
 ## Installation
 
-Consists of **one short C# file** you can throw into your project (or [install via nuget](#new-nuget)) and start using it.
+We have published this to Nuget. To install run this from the Package Manager Console in Visual Studio or Visual Studio Code:
+
+`Install-Package Displayr.AspNetSaml`
+
+This will add a reference to a compiled version of this assembly.
 
 ## Usage
 
@@ -107,14 +111,6 @@ These rely on:
 * The test Azure Active Directory called "Saml Single Signon Test Organisation"
 * In which the "Displayr (saml-test-master)" Enterprise Application is registered, including a reference to the redirection URL (below).
 * An Azure function that serves the redirection URL.  (Constants.cs:REPLY_URL)
-
-# Nuget
-
-I've published this to Nuget.
-
-`Install-Package Displayr.AspNetSaml`
-
-This will add a reference to a compiled version of this assembly.
 
 # Nuget Publishing Steps
 
