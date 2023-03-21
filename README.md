@@ -125,10 +125,10 @@ nuget pack Saml\Saml.nuspec
 
 7. Ignore warnings about using bin folders.
 8. This will generate a file like Displayr.AspNetSaml.1.1.0.nupkg in your solution root folder.
-9. Visit https://www.nuget.org/packages/Displayr.AspNetSaml/ and login, and click upload.
-10. Upload the nupkg file generated.
-11. In the preview, enter https://raw.githubusercontent.com/Displayr/AspNetSaml/master/README.md for the doco url.
-12. Click Submit
+9. Visit https://www.nuget.org/account/apikeys and create a new key (if you don't have one) that has push access to AspNetSaml.
+10. From the Package Manage Console, run this command:
+
+nuget push -Apikey {your-api-key} -src https://api.nuget.org/v3/index.json .\Displayr.AspNetSaml.{your version}.nupkg
 
 # About Displayr
 
