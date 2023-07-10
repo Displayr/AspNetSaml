@@ -104,7 +104,7 @@ namespace Saml
 		private const string NORMAL_ATTRIBUTE_NAME_PREFIX = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/";
 		private const string GROUPS_MS_NAME_PREFIX = "http://schemas.microsoft.com/ws/2008/06/identity/claims/";
 
-        protected XmlDocument _xmlDoc;
+		protected XmlDocument _xmlDoc;
 		protected readonly X509Certificate2 _certificate;
 		protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
 
