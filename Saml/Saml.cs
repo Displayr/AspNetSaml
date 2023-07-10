@@ -101,7 +101,10 @@ namespace Saml
 			return bytes;
 		}
 
-		protected XmlDocument _xmlDoc;
+		private const string NORMAL_ATTRIBUTE_NAME_PREFIX = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/";
+		private const string GROUPS_MS_NAME_PREFIX = "http://schemas.microsoft.com/ws/2008/06/identity/claims/";
+
+        protected XmlDocument _xmlDoc;
 		protected readonly X509Certificate2 _certificate;
 		protected XmlNamespaceManager _xmlNameSpaceManager; //we need this one to run our XPath queries on the SAML XML
 
@@ -287,18 +290,21 @@ namespace Saml
 
 		public List<string> GetGroups()
 		{
-			// this is only valid for azure claims.
-			var node_list = _xmlDoc.SelectNodes("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='http://schemas.microsoft.com/ws/2008/06/identity/claims/groups']/saml:AttributeValue", _xmlNameSpaceManager);
-			var group_ids = new List<string>();
-			foreach (XmlNode node in node_list) {
-				group_ids.Add(node.InnerText);
+			foreach (string name in CoalesceNamesAndPrefixedNames(new List<string> { "groups" }, GROUPS_MS_NAME_PREFIX)) {
+				var attempt = GetAllCustomAttribute(name);
+				if (attempt.Count() > 0)
+					return attempt.ToList();
 			}
-			return group_ids;
+			return new List<string>();
 		}
+
+		private IEnumerable<string> ApplyNamePrefixToAll(IEnumerable<string> names, string name_prefix) => names.Select(name => name_prefix + name);
+
+		private IEnumerable<string> CoalesceNamesAndPrefixedNames(IEnumerable<string> names, string name_prefix) => names.Union(ApplyNamePrefixToAll(names, name_prefix));
 
 		private string AssertionAttributeValueForWithCoalesce(params string[] names_to_try)
 		{
-			foreach (string name in names_to_try.Union(names_to_try.Select(name => $"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/{name}"))) {
+			foreach (string name in CoalesceNamesAndPrefixedNames(names_to_try, NORMAL_ATTRIBUTE_NAME_PREFIX)) {
 				var attempt = GetCustomAttribute(name);
 				if (attempt != null)
 					return attempt;
@@ -306,10 +312,21 @@ namespace Saml
 			return null;
 		}
 
-		public string GetCustomAttribute(string attr)
+		private string AttributeByNameXPath(string name) => $"/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='{name}']/saml:AttributeValue";
+
+		private string GetCustomAttribute(string attr)
 		{
-			XmlNode node = _xmlDoc.SelectSingleNode("/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='" + attr + "']/saml:AttributeValue", _xmlNameSpaceManager);
+			XmlNode node = _xmlDoc.SelectSingleNode(AttributeByNameXPath(attr), _xmlNameSpaceManager);
 			return node == null ? null : node.InnerText;
+		}
+
+		private IEnumerable<string> GetAllCustomAttribute(string attr)
+		{
+			var node_list = _xmlDoc.SelectNodes(AttributeByNameXPath(attr), _xmlNameSpaceManager);
+			foreach (XmlNode node in node_list) {
+				yield return node.InnerText;
+			}
+			yield break;
 		}
 
 		//returns namespace manager, we need one b/c MS says so... Otherwise XPath doesnt work in an XML doc with namespaces
