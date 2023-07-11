@@ -46,6 +46,7 @@ unr4TOQQAYtnBQT4DCGs
 -----END CERTIFICATE-----";
 
         public const string VALID_XML_RESPONSE_RESOURCE     = "Saml.Test.valid_response.xml";
+        public const string VALID_XML_WITH_BASE_GROUPS_RESPONSE_RESOURCE = "Saml.Test.valid_response_base_groups.xml";
         public const string INVALID_XML_RESPONSE_RESOURCE   = "Saml.Test.invalid_response.xml";
         public const string EMPTY_XML_RESPONSE_RESOURCE     = "Saml.Test.empty_response.xml";
         public const string MICROSOFT_XML_RESPONSE_RESOURCE = "Saml.Test.microsoft_response_valid.xml";
