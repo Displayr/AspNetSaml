@@ -314,7 +314,7 @@ namespace Saml
 
 		private string AttributeByNameXPath(string name) => $"/samlp:Response/saml:Assertion[1]/saml:AttributeStatement/saml:Attribute[@Name='{name}']/saml:AttributeValue";
 
-		private string GetCustomAttribute(string attr)
+		public string GetCustomAttribute(string attr)
 		{
 			XmlNode node = _xmlDoc.SelectSingleNode(AttributeByNameXPath(attr), _xmlNameSpaceManager);
 			return node == null ? null : node.InnerText;
