@@ -49,6 +49,26 @@ namespace Saml.Test
             Assert.AreEqual("87654321-testing4-testing3", groups[1]);
         }
 
+        // <summary>
+        /// This test method ensures that the groups getter works with the non MS groups name to.
+        /// </summary>
+        [TestMethod()]
+        public void TestGroupsGetter()
+        {
+            // Certificate here is unimportant to actual response as we wont validate, just needs to be a valid cert.
+            Response response = new Response(Constants.VALID_CERTIFICATE);
+
+            string xml_contents = GetResourceContents(Constants.VALID_XML_WITH_BASE_GROUPS_RESPONSE_RESOURCE);
+
+            response.LoadXml(xml_contents);
+
+            List<string> groups = response.GetGroups();
+
+            Assert.AreEqual(2, groups.Count);
+            Assert.AreEqual("12345678-testing1-testing2", groups[0]);
+            Assert.AreEqual("87654321-testing4-testing3", groups[1]);
+        }
+
         /// <summary>This test method loads an empty XML SAML response and a legitimate certificate
         /// into the 'Response' class of the SAML library. The test ensures that the appropriate 
         /// exception is thrown.</summary>
