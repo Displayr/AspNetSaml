@@ -22,7 +22,7 @@ namespace Saml.Integration
         // ... > Enterprise Applications > Displayr (saml-test-master)
         public const string APP_ID = "2cb753ec-8174-4f4d-8bb2-a3a50de9cd29";
         // ... > Single signon on > Basic SAML Configuration.
-        public const string REPLY_URL = @"https://displayr-functions-csharp.azurewebsites.net/api/SamlTestIdentityProviderResponse?code=lLl0kDBzXIz84eiJJKRtq7N4fD35b0nd24R95HJqLq5X5bgfCkhcVg==";
+        public const string REPLY_URL = @"https://functions-csharp.displayr.com/api/SamlTestIdentityProviderResponse?code=lLl0kDBzXIz84eiJJKRtq7N4fD35b0nd24R95HJqLq5X5bgfCkhcVg==";
         // ... > SAML Signing Certificate
         public const string VALID_CERTIFICATE = @"-----BEGIN CERTIFICATE-----
 MIIC8DCCAdigAwIBAgIQaBn3qbDVJ7ZDYJ1vNoM2mzANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQD
